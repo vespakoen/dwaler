@@ -48,6 +48,8 @@ This image shows you should turn right (90 degrees)
 - Catalex MicroSD Adapter V1.1 (you will need google translate to acquire one of those)
 - A button, some wires and a soldering iron
 
+![On the breadboard](https://github.com/vespakoen/dwaler/blob/master/screenshots/breadboard.jpg?raw=true)
+
 ## Dependencies
 
 Make sure to add the [Fat16 library](https://github.com/greiman/Fat16) to your Arduino's libraries folder.
