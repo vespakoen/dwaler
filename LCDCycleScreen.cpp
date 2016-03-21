@@ -116,7 +116,7 @@ void LCDCycleScreen::renderProgressScreen()
   }
   _lcd->print(progress); _lcd->print("%");
   _lcd->setCursor(0, 1);
-  _lcd->print("KM "); _lcd->print(String(totalDistance, 2)); _lcd->print(" - "); _lcd->print(String(distanceTravelled, 2));
+  _lcd->print("KM "); _lcd->print(String(totalDistance, 2)); _lcd->print("-"); _lcd->print(String(distanceTravelled, 2));
 }
 
 void LCDCycleScreen::renderSpeedScreen()
