@@ -1,0 +1,6 @@
+rootProject.name = 'Dwaler'
+
+include ':app'
+
+include ':reactnativemapboxgl'
+project(':reactnativemapboxgl').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-mapbox-gl/android')
