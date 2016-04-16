@@ -3,19 +3,21 @@
 LCDCycleScreen::LCDCycleScreen(
   GPSManager *gps,
   NanoLiquidCrystal *lcd,
-  Trip *trip,
+  State *state,
   SDStorageFat16 *store
 )
 {
   _gps = gps;
   _lcd = lcd;
-  _trip = trip;
+  _state = state;
   _store = store;
 }
 
 void LCDCycleScreen::setup()
 {
-  _totalTrips = _store->countTrips();
+  // setup the lcd
+  _lcd->begin(16, 2);
+  // create lcd characters
   for (uint8_t i = 0; i < 8; i++) {
     uint8_t buffer[8];
     for (uint8_t j = 0; j < 8; j++) {
@@ -23,13 +25,15 @@ void LCDCycleScreen::setup()
     }
     _lcd->createChar(i, buffer);
   }
+  // count trips
+  _totalTrips = _store->countTrips();
 }
 
 void LCDCycleScreen::renderCompassScreen()
 {
   uint16_t _heading = _gps->getHeading();
   // get the diff
-  int16_t _relativeBearing = _gps->getLocation().bearingTo(_trip->getDestinationLocation()) - _heading;
+  int16_t _relativeBearing = _gps->getLocation().bearingTo(_state->getDestinationLocation()) - _heading;
   // make sure it's absolute
   if (_relativeBearing < 0) {
     _relativeBearing = 360 + _relativeBearing;
@@ -94,8 +98,8 @@ void LCDCycleScreen::renderCompassScreen()
 
 void LCDCycleScreen::renderProgressScreen()
 {
-  Location destinationLocation = _trip->getDestinationLocation();
-  float totalDistance = _trip->getStartingLocation().distanceTo(destinationLocation) / 1000;
+  Location destinationLocation = _state->getDestinationLocation();
+  float totalDistance = _state->getStartingLocation().distanceTo(destinationLocation) / 1000;
   float distanceTravelled = totalDistance - (_gps->getLocation().distanceTo(destinationLocation) / 1000);
   if (distanceTravelled < 0) {
     distanceTravelled = 0;
@@ -129,7 +133,7 @@ void LCDCycleScreen::renderSpeedScreen()
   _lcd->setCursor(0, 0);
   _lcd->print("NOW: "); _lcd->print(String(_gps->getSpeed(), 2)); _lcd->print(" km/h");
   _lcd->setCursor(0, 1);
-  _lcd->print("AVG: "); _lcd->print(String(_trip->getAverageSpeed(), 2)); _lcd->print(" km/h");
+  _lcd->print("TOP: "); _lcd->print(String(_state->getTopSpeed(), 2)); _lcd->print(" km/h");
 }
 
 void LCDCycleScreen::renderPositionScreen()
@@ -144,9 +148,9 @@ void LCDCycleScreen::renderPositionScreen()
 void LCDCycleScreen::renderStatsScreen()
 {
   _lcd->setCursor(0, 0);
-  _lcd->print("TOP: "); _lcd->print(String(_trip->getTopSpeed(), 2)); _lcd->print(" km/h");
+  _lcd->print("TOP: "); _lcd->print(String(_state->getTopSpeed(), 2)); _lcd->print(" km/h");
   _lcd->setCursor(0, 1);
-  _lcd->print("DIS: "); _lcd->print(String(_trip->getTravelledDistance() / 1000, 2)); _lcd->print(" km");
+  _lcd->print("DIS: "); _lcd->print(String(_state->getTravelledDistance() / 1000, 2)); _lcd->print(" km");
 }
 
 void LCDCycleScreen::renderGPSScreen()
@@ -200,19 +204,36 @@ void LCDCycleScreen::scrollTrips()
 
 void LCDCycleScreen::selectTrip()
 {
-  _trip->setDestinationLocation(_store->getTripDestination(_tripnames[_tripSelectionIndex % 2]));
+  _state->setActiveScreen(0);
+  _state->setDestinationLocation(_store->getTripDestination(_tripnames[_tripSelectionIndex % 2]));
 }
 
 void LCDCycleScreen::resetTripSelectionIndex() {
+  _state->setActiveScreen(255);
   _tripSelectionIndex = 0;
   _forceRedraw = true;
 }
 
-void LCDCycleScreen::render(uint8_t activeScreen)
+void LCDCycleScreen::next()
+{
+  uint8_t activeScreen = _state->getActiveScreen();
+  if (activeScreen == 255) {
+    scrollTrips();
+  } else {
+    activeScreen++;
+    if (activeScreen == 6) {
+      activeScreen = 0;
+    }
+  }
+  _state->setActiveScreen(activeScreen);
+}
+
+void LCDCycleScreen::render()
 {
   unsigned long now = millis();
   if (now - _lastRenderTime >= _renderInterval) {
     _lastRenderTime = now;
+    uint8_t activeScreen = _state->getActiveScreen();
     if (activeScreen == 255) return renderTripSelectorScreen();
     // clear from here to reduce sketch size, renderTripSelectorScreen does it's own clearing
     _lcd->clear();

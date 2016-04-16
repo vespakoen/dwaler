@@ -5,7 +5,7 @@
 #include "Arduino.h"
 #include "GPSManager.h"
 #include "NanoLiquidCrystal.h"
-#include "Trip.h"
+#include "State.h"
 #include "SDStorageFat16.h"
 
 const char _headingString[] PROGMEM = "W-+--+-nN-+--+-eE-+--+-sS-+--+-w";
@@ -95,7 +95,12 @@ const uint8_t* const font[8] = {n, N, e, E, s, S, w, W};
 
 class LCDCycleScreen {
   public:
-    LCDCycleScreen(GPSManager *gps, NanoLiquidCrystal *lcd, Trip *trip, SDStorageFat16 *store);
+    LCDCycleScreen(
+      GPSManager *gps,
+      NanoLiquidCrystal *lcd,
+      State *state,
+      SDStorageFat16 *store
+    );
     void setup();
     void renderTripSelectorScreen();
     void renderCompassScreen();
@@ -107,11 +112,12 @@ class LCDCycleScreen {
     void scrollTrips();
     void selectTrip();
     void resetTripSelectionIndex();
-    void render(uint8_t activeScreen);
+    void next();
+    void render();
   private:
     GPSManager *_gps;
     NanoLiquidCrystal *_lcd;
-    Trip *_trip;
+    State *_state;
     SDStorageFat16 *_store;
     uint8_t _totalTrips;
     bool _forceRedraw = false;

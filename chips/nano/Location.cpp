@@ -87,7 +87,7 @@ float Location::_calculateDistance(float sourceLatitude, float sourceLongitude, 
   return distance;
 }
 
-String toString()
+String Location::toString()
 {
   return String(getLatitude(), 7) + "," + String(getLongitude(), 7) + "," + String(getAltitude(), 2);
 }

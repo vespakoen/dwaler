@@ -1,5 +1,4 @@
 #include "Location.h"
-#include "Trace.h"
 #include "GPSManager.h"
 #include "SDStorageFat16.h"
 #include "State.h"
@@ -12,50 +11,64 @@ Adafruit_GPS gps(&softwareSerial);
 SDStorageFat16 store(4);                       // (CS)
 
 // DOMAIN
-Trace trace;
-GPSManager gpsManager(&gps, &trace, &store);
+State state;
+GPSManager gpsManager(&gps, &state, &store);
 
 // SCREEN
-LCDCycleScreen lcdCycleScreen(&gpsManager, &lcd, &trace, &store);
-
-uint8_t activeScreen = 255;
+LCDCycleScreen lcdCycleScreen(&gpsManager, &lcd, &state, &store);
 
 // SETUP
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   // move some LCD pins to analog
   pinMode(14, INPUT_PULLUP);
   for (uint8_t p = 15; p <= 18; p++) {
     pinMode(p, OUTPUT);
   }
-  // setup the lcd
-  lcd.begin(16, 2);
-  // setup our trace
   store.setup();
   gpsManager.setup();
   startInterrupt();
-  gpsManager.startLocus();
   lcdCycleScreen.setup();
-  State state = store.getState();
-  activeScreen = state.getActiveScreen();
+  state = store.getState();
   char tripName[12];
   state.getTripName(tripName, 12);
   Location tripDestination = store.getTripDestination(tripName);
-  trace.setDestinationLocation(tripDestination);
+  state.setDestinationLocation(tripDestination);
 }
 
 // LOOP
 int lastButtonState = 0;
 unsigned long lastDebounceTime;
 bool buttonLocked = false;
+String inputString = "";
+char junk;
 void loop() {
+  if (Serial.available()) {
+    while (Serial.available()) {
+      char inChar = (char) Serial.read();
+      inputString += inChar;
+    }
+    Serial.println(state.toString());
+    while (Serial.available() > 0) {
+      junk = Serial.read();
+    }
+    if (inputString == "t") {
+      lcdCycleScreen.resetTripSelectionIndex();
+    } else if (inputString == "s") {
+      lcdCycleScreen.selectTrip();
+    } else if (inputString == "n") {
+      lcdCycleScreen.next();
+    }
+    inputString = "";
+  }
+
   static bool foundStartingLocation = false;
   gpsManager.loop();
   if (!foundStartingLocation && gpsManager.getFix()) {
-    trace.setStartingLocation(gpsManager.getLocation());
+    state.setStartingLocation(gpsManager.getLocation());
     foundStartingLocation = true;
   }
-  lcdCycleScreen.render(activeScreen);
+  lcdCycleScreen.render();
 
   uint16_t reading = analogRead(14);
   if (!buttonLocked && reading < 500) {
@@ -63,11 +76,9 @@ void loop() {
     delay(300); // wait a bit to see if it's a long press
     if (analogRead(14) < 300) {
       // long
-      if (activeScreen == 255) {
+      if (state.getActiveScreen() == 255) {
         lcdCycleScreen.selectTrip();
-        activeScreen = 0;
       } else {
-        activeScreen = 255;
         lcdCycleScreen.resetTripSelectionIndex();
       }
       while (analogRead(14) < 300) {
@@ -76,14 +87,7 @@ void loop() {
       }
     } else {
       // short
-      if (activeScreen == 255) {
-        lcdCycleScreen.scrollTrips();
-      } else {
-        activeScreen++;
-        if (activeScreen == 6) {
-          activeScreen = 0;
-        }
-      }
+      lcdCycleScreen.next();
     }
     // prevent double clicks
     // unlock

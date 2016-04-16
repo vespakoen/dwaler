@@ -1,9 +1,9 @@
 #include "GPSManager.h"
 
-GPSManager::GPSManager(Adafruit_GPS *gps, Trace *trace, SDStorageFat16 *store)
+GPSManager::GPSManager(Adafruit_GPS *gps, State *state, SDStorageFat16 *store)
 {
   _gps = gps;
-  _trace = trace;
+  _state = state;
   _store = store;
   uint32_t _timer = millis();
 }
@@ -19,20 +19,20 @@ void GPSManager::setup()
   _gps->sendCommand(PMTK_API_SET_FIX_CTL_1HZ);
 }
 
-void GPSManager::startLocus()
-{
+// void GPSManager::startLocus()
+// {
   // start locus
   // delay(500);
   // _gps->LOCUS_StartLogger();
   // delay(1000);
-}
+// }
 
 void GPSManager::loop()
 {
   static Location lastLocation;
   float speed = getSpeed();
   if (speed > _topSpeed) {
-    _trace->setTopSpeed(speed);
+    _state->setTopSpeed(speed);
     _topSpeed = speed;
   }
   if (_gps->newNMEAreceived()) {
@@ -41,12 +41,10 @@ void GPSManager::loop()
   if (millis() - _timer > 10000) { //  && _gps->LOCUS_ReadStatus()
     Location currentLocation = getLocation();
     if (!lastLocation.isNullIsland()) {
-      _trace->setTravelledDistance(_trace->getTravelledDistance() + lastLocation.distanceTo(currentLocation));
+      _state->setTravelledDistance(_state->getTravelledDistance() + lastLocation.distanceTo(currentLocation));
     }
     lastLocation = currentLocation;
     _timer = millis();
-    // _trace->setTravelledDistance(_gps->LOCUS_distance);
-    // _trace->setAverageSpeed(_gps->LOCUS_speed * 3.6); // m/s to km/h
   }
 }
 
@@ -82,10 +80,10 @@ unsigned int GPSManager::getSatellites()
   return (unsigned int) _gps->satellites;
 }
 
-void GPSManager::clearLog()
-{
-  _gps->sendCommand(PMTK_LOCUS_ERASE_FLASH);
-}
+// void GPSManager::clearLog()
+// {
+//   _gps->sendCommand(PMTK_LOCUS_ERASE_FLASH);
+// }
 
 // Convert NMEA coordinate to decimal degrees
 float GPSManager::_nmeaToDecimalDegrees(float nmeaCoord, char dir) {

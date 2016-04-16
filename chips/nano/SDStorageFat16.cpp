@@ -7,7 +7,7 @@ SDStorageFat16::SDStorageFat16(uint8_t csPin) {
 void SDStorageFat16::setup()
 {
   pinMode(_csPin, OUTPUT);
-  _sd.begin(_csPin, SPI_HALF_SPEED);
+  _sd.begin(_csPin, SPI_EIGHTH_SPEED);
   Fat16::init(&_sd);
 }
 
@@ -67,10 +67,10 @@ uint8_t countTraces(const char* tripName)
   Fat16 _file;
   uint8_t count = 0;
   for (uint16_t i = 0; _file.readDir(&d, &i, DIR_ATT_VOLUME_ID); i++) {
-    bool mismatch = false
+    bool mismatch = false;
     for (uint8_t j = 0; j < sizeof(tripName); j++) {
-      if (d.name[j] !== tripName[j]) {
-        mismatch = true
+      if (d.name[j] != tripName[j]) {
+        mismatch = true;
       }
     }
     // is the filename equal to the tripname and does the file NOT end with .TRP?
@@ -82,25 +82,25 @@ uint8_t countTraces(const char* tripName)
   return count;
 }
 
-void getTrace(const char* tripName, uint8_t traceNum, OnValue callback)
-{
-  Fat16 _file;
-  char lineBuffer[20];
-  _file.open(printf("%s.%.2d", tripName, traceNum), O_READ);
-  uint8_t i = 0;
-  while ((c = _file.read() > 0) {
-    if (c == '\n') {
-      // call callback with line lineBuffer
-      callback(lineBuffer);
-      // reset lineBuffer and counter
-      lineBuffer[0] = '\0';
-      i = 0;
-    }
-    lineBuffer[i] = c;
-    i++;
-  }
-  _file.close();
-}
+// void SDStorageFat16::getTrace(const char* tripName, uint8_t traceNum, OnValue callback)
+// {
+//   Fat16 _file;
+//   char lineBuffer[20];
+//   _file.open(printf("%s.%.2d", tripName, traceNum), O_READ);
+//   uint8_t i = 0;
+//   while ((c = _file.read() > 0) {
+//     if (c == '\n') {
+//       // call callback with line lineBuffer
+//       callback(lineBuffer);
+//       // reset lineBuffer and counter
+//       lineBuffer[0] = '\0';
+//       i = 0;
+//     }
+//     lineBuffer[i] = c;
+//     i++;
+//   }
+//   _file.close();
+// }
 
 void SDStorageFat16::logLocation(const char* tripName, uint8_t traceId, Location location)
 {
@@ -112,8 +112,6 @@ void SDStorageFat16::logLocation(const char* tripName, uint8_t traceId, Location
   _file.println(String(location.getLatitude(), 7) + "," + String(location.getLongitude(), 7) + "," + String(location.getAltitude(), 2));
   _file.close();
 }
-
-void getTrace(const char* tripName, uint8_t traceNum, OnValue callback);
 
 State SDStorageFat16::getState()
 {
