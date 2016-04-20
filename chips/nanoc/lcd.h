@@ -1,21 +1,9 @@
-#define F_CPU 20000000L // run CPU at 16 MHz
 #include <avr/io.h>
 #include <util/delay.h>
 #include <string.h>
 #include <stdlib.h>
-
-#define lcd_clearbit(x,y) x &= ~_BV(y) // equivalent to cbi(x,y)
-#define lcd_setbit(x,y) x |= _BV(y) // equivalent to sbi(x,y)
-
-#define LCD_DDR DDRC
-#define LCD_PORT PORTC
-#define LCD_RS 5 // pin for LCD R/S (eg PB0)
-#define LCD_E 0 // pin for LCD enable
-#define LCD_DAT4 4 // pin for d4
-#define LCD_DAT5 3 // pin for d5
-#define LCD_DAT6 2 // pin for d6
-#define LCD_DAT7 1 // pin for d7
-#define CLEAR_DATA_BITS 0xE1; // 1110.0001 = clear 4 data lines
+#include "config.h"
+#include "helpers.h"
 
 #define LCD_CLEARDISPLAY 0x01
 #define SETCURSOR 0x80
@@ -23,23 +11,23 @@
 
 void lcd_set_ports()
 {
-  LCD_DDR = 0x3F; // 0011.1111; set B0-B5 as outputs
+  LCD_DDR = LCD_ALL_OUTPUT;
 }
 
 void lcd_pulse_enable()
 {
-  lcd_setbit(LCD_PORT, LCD_E); // take LCD enable line high
+  set_bit(LCD_PORT, LCD_E); // take LCD enable line high
   _delay_us(40); // wait 40 microseconds
-  lcd_clearbit(LCD_PORT, LCD_E); // take LCD enable line low
+  clear_bit(LCD_PORT, LCD_E); // take LCD enable line low
 }
 
 void lcd_send_nibble(uint8_t data)
 {
   LCD_PORT &= CLEAR_DATA_BITS;
-  if (data & _BV(4)) lcd_setbit(LCD_PORT, LCD_DAT4);
-  if (data & _BV(5)) lcd_setbit(LCD_PORT, LCD_DAT5);
-  if (data & _BV(6)) lcd_setbit(LCD_PORT, LCD_DAT6);
-  if (data & _BV(7)) lcd_setbit(LCD_PORT, LCD_DAT7);
+  if (data & _BV(4)) set_bit(LCD_PORT, LCD_DAT4);
+  if (data & _BV(5)) set_bit(LCD_PORT, LCD_DAT5);
+  if (data & _BV(6)) set_bit(LCD_PORT, LCD_DAT6);
+  if (data & _BV(7)) set_bit(LCD_PORT, LCD_DAT7);
   lcd_pulse_enable(); // clock 4 bits into controller
 }
 
@@ -51,13 +39,13 @@ void lcd_send_byte(uint8_t data)
 
 void lcd_command(uint8_t cmd)
 {
-  lcd_clearbit(LCD_PORT, LCD_RS); // R/S line 0 = command data
+  clear_bit(LCD_PORT, LCD_RS); // R/S line 0 = command data
   lcd_send_byte(cmd); // send it
 }
 
 void lcd_data(uint8_t data)
 {
-  lcd_setbit(LCD_PORT, LCD_RS); // R/S line 0 = command data
+  set_bit(LCD_PORT, LCD_RS); // R/S line 0 = command data
   lcd_send_byte(data); // send it
 }
 
@@ -93,7 +81,7 @@ void lcd_set_cursor(uint8_t x, uint8_t y) // put LCD cursor on specified line
 
 void lcd_char(uint8_t ch)
 {
-  lcd_setbit(LCD_PORT, LCD_RS); // R/S line 1 = character data
+  set_bit(LCD_PORT, LCD_RS); // R/S line 1 = character data
   lcd_send_byte(ch); // send it
 }
 

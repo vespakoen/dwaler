@@ -1,5 +1,4 @@
 #include "lcd.h"
-#include "softuart.h"
 #include <avr/pgmspace.h>
 
 const char _headingString[] PROGMEM = "W-+--+-nN-+--+-eE-+--+-sS-+--+-w";
@@ -15,9 +14,15 @@ const unsigned char font[8][8] PROGMEM = {
   { 0x3,0x3,0x3,0x7,0x16,0x16,0x1E,0x1C }
 };
 
-void display(void) {
+void lcd_display_init(void)
+{
   lcd_init();
+  lcd_display_add_custom_chars();
+  lcd_display_render_compass_screen();
+}
 
+void lcd_display_add_custom_chars(void)
+{
   for (uint8_t i = 0; i < 8; i++) {
     uint8_t buffer[8];
     for (uint8_t j = 0; j < 8; j++) {
@@ -25,7 +30,10 @@ void display(void) {
     }
     lcd_create_char(i, buffer);
   }
+}
 
+void lcd_display_render_compass_screen(void)
+{
   lcd_set_cursor(0, 0);
   lcd_message("       <>       ");
   lcd_set_cursor(0, 1);
@@ -57,38 +65,4 @@ void display(void) {
       lcd_char(character);
     }
   }
-}
-
-void gps_command(const char* cmd)
-{
-  while (*cmd) {
-    sw_uart_send_byte(*cmd++);
-  }
-}
-
-void gps(void) {
-  lcd_set_cursor(0, 0);
-  sw_uart_init();
-  const char* PMTK_SET_NMEA_OUTPUT_RMCONLY = "$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29";
-  gps_command(PMTK_SET_NMEA_OUTPUT_RMCONLY);
-  const char* PMTK_SET_NMEA_UPDATE_1HZ = "$PMTK220,1000*1F";
-  gps_command(PMTK_SET_NMEA_UPDATE_1HZ);
-  const char* PMTK_API_SET_FIX_CTL_1HZ = "$PMTK300,1000,0,0,0,0*1C";
-  gps_command(PMTK_API_SET_FIX_CTL_1HZ);
-  lcd_message("COMMANDS SENT");
-  // char c;
-  // while (1) {
-  //   if (sw_uart_state == SWUART_IDLE_S) {
-  //     sw_uart_receive_byte();
-  //     if (sw_uart_rxdata) {
-  //       lcd_char(sw_uart_rxdata);
-  //     }
-  //   }
-  // }
-}
-
-int main(void)
-{
-  display();
-  gps();
 }
