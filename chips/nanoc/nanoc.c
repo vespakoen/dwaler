@@ -1,94 +1,12 @@
 #include "lcd.h"
-#include "softuart.h"
-#include <avr/pgmspace.h>
+#include "lcd_display.h"
+#include "bluetooth.h"
+#include "gps.h"
 
-const char _headingString[] PROGMEM = "W-+--+-nN-+--+-eE-+--+-sS-+--+-w";
-
-const unsigned char font[8][8] PROGMEM = {
-  { 0x1E,0x1F,0x1B,0x19,0x18,0x18,0x18,0x18 },
-  { 0x3,0x3,0x3,0x13,0x1B,0x1F,0xF,0x7 },
-  { 0xF,0xF,0xC,0xF,0xF,0xC,0xF,0xF },
-  { 0x1E,0x1E,0x0,0x18,0x18,0x0,0x1E,0x1E },
-  { 0x1F,0x1F,0x18,0x1F,0x1F,0x0,0x1F,0x1F },
-  { 0x1F,0x1F,0x0,0x1F,0x1F,0x3,0x1F,0x1F },
-  { 0x18,0x18,0x18,0x1C,0xD,0xD,0xF,0x7 },
-  { 0x3,0x3,0x3,0x7,0x16,0x16,0x1E,0x1C }
-};
-
-void display(void) {
+int main(void) {
   lcd_init();
-
-  for (uint8_t i = 0; i < 8; i++) {
-    uint8_t buffer[8];
-    for (uint8_t j = 0; j < 8; j++) {
-      buffer[j] = pgm_read_word_near(&(font[i][j]));
-    }
-    lcd_create_char(i, buffer);
-  }
-
-  lcd_set_cursor(0, 0);
-  lcd_message("       <>       ");
-  lcd_set_cursor(0, 1);
-  uint8_t _cutStart = round(180 / 11.25);
-  for (uint8_t k = _cutStart; k <= _cutStart + 16; k++) {
-    char character;
-    if (k > 31) {
-      character = (char) pgm_read_byte_near(&_headingString[k - 32]);
-    } else {
-      character = (char) pgm_read_byte_near(&_headingString[k]);
-    }
-    if (character == 'n') {
-      lcd_char(0x0);
-    } else if (character == 'N') {
-      lcd_char(0x1);
-    } else if (character == 'e') {
-      lcd_char(0x2);
-    } else if (character == 'E') {
-      lcd_char(0x3);
-    } else if (character == 's') {
-      lcd_char(0x4);
-    } else if (character == 'S') {
-      lcd_char(0x5);
-    } else if (character == 'w') {
-      lcd_char(0x6);
-    } else if (character == 'W') {
-      lcd_char(0x7);
-    } else {
-      lcd_char(character);
-    }
-  }
-}
-
-void gps_command(const char* cmd)
-{
-  while (*cmd) {
-    sw_uart_send_byte(*cmd++);
-  }
-}
-
-void gps(void) {
-  lcd_set_cursor(0, 0);
-  sw_uart_init();
-  const char* PMTK_SET_NMEA_OUTPUT_RMCONLY = "$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29";
-  gps_command(PMTK_SET_NMEA_OUTPUT_RMCONLY);
-  const char* PMTK_SET_NMEA_UPDATE_1HZ = "$PMTK220,1000*1F";
-  gps_command(PMTK_SET_NMEA_UPDATE_1HZ);
-  const char* PMTK_API_SET_FIX_CTL_1HZ = "$PMTK300,1000,0,0,0,0*1C";
-  gps_command(PMTK_API_SET_FIX_CTL_1HZ);
-  lcd_message("COMMANDS SENT");
-  // char c;
-  // while (1) {
-  //   if (sw_uart_state == SWUART_IDLE_S) {
-  //     sw_uart_receive_byte();
-  //     if (sw_uart_rxdata) {
-  //       lcd_char(sw_uart_rxdata);
-  //     }
-  //   }
-  // }
-}
-
-int main(void)
-{
-  display();
-  gps();
+  lcd_display_init();
+  bluetooth_init();
+  gps_init();
+  while (1);
 }

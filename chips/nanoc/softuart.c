@@ -20,7 +20,6 @@
  ****/
 
 #include "softuart.h"
-#include "config.h"
 
 /****
  * sw_uart_states:
@@ -37,8 +36,8 @@ volatile char bitcount; // Bits received or transmitted
 
 void sw_uart_init() {
   // Set pin directions
-  SWUART_DDRD |= (1<<SWUART_TXPIN);
-  //  SWUART_DDRD &= ~(1<<SWUART_RXPIN);
+  SWUART_DDR |= (1<<SWUART_TXPIN);
+  //  SWUART_DDR &= ~(1<<SWUART_RXPIN);
   // Tri-state receive port pull-up
   //  SWUART_PORT |= (1<<SWUART_RXPIN);
   // Output high on transmit port
@@ -66,7 +65,7 @@ ISR(INT0_vect) {
   // Setup timer 0 for 1.5 bit delay
   TCCR0B &= ~((1<<CS01) | (1<<CS00));
   //OCR0A = 119; // 1.5*80=120 for 3125bps
-  OCR0A = 80;// 1.5*54 = 81
+  OCR0A = SWUART_TIMERTOP;// 1.5*54 = 81
   TCNT0 = 0;
   // Enable timer 0 cmp match interrupt
   TCCR0B |= (1<<CS01) | (1<<CS00);
@@ -92,8 +91,8 @@ ISR(TIMER0_COMPA_vect) {
       bitcount++;
       // Setup timer 0 for 1 bit delay
       TCCR0B &= ~((1<<CS01) | (1<<CS00));
-      OCR0A = 53;//~4629BPS
-      //OCR0A = 79;
+      // OCR0A = 53;//~4629BPS
+      OCR0A = SWUART_TIMERTOP;
       // Reset timer
       TCNT0 = 0;
       TCCR0B |= (1<<CS01) | (1<<CS00);
@@ -147,8 +146,9 @@ void sw_uart_send_byte(char c) {
   // Reset count
   TCNT0 = 0;
   // Setup timer 0 for baud rate
-  OCR0A = 53;
-  //OCR0A = 79;
+  // OCR0A = 53;
+  OCR0A = SWUART_TIMERTOP;
+
   // Set transmit port low (falling edge start bit)
   SWUART_PORT &= ~(1<<SWUART_TXPIN);
   // Enable counter
