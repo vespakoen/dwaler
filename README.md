@@ -40,7 +40,6 @@ This image shows you should turn right (90 degrees)
 
 - **Logging** Logs your latitude, longitude and altitude to an SD
 
-<<<<<<< HEAD
 ## Planned features
 
 - **More chips** Add support for the ESP8266 and the CC3200.
