@@ -1,12 +1,13 @@
-#ifndef h_DisplayLCD
-#define h_DisplayLCD
+#ifndef h_LCDDisplay
+#define h_LCDDisplay
 
 #include <avr/pgmspace.h>
-#include "Arduino.h"
-#include "TinyLCD.h"
-#include "State.h"
+#include <Arduino.h>
+#include <TinyLCD.h>
+#include "../State.h"
 
-const char _courseString[] PROGMEM = "W-+--+-nN-+--+-eE-+--+-sS-+--+-w";
+const char _courseString180[] PROGMEM = "W+nNwW+nN+nNeE+eE+eEsS+sS+sSwW+w";
+const char _courseString90[]  PROGMEM = "W--+--nNwW--+--nN--+--nNeE--+--eE--+--eEsS--+--sS--+--sSwW--+--w";
 
 const uint8_t n[8] PROGMEM = {
   B11110,
@@ -91,9 +92,9 @@ const uint8_t W[8] PROGMEM = {
 
 const uint8_t* const font[8] = {n, N, e, E, s, S, w, W};
 
-class DisplayLCD {
+class LCDDisplay {
   public:
-    DisplayLCD(
+    LCDDisplay(
       TinyLCD *lcd,
       State *state
     );

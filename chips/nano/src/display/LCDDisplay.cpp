@@ -1,6 +1,6 @@
-#include "DisplayLCD.h"
+#include "LCDDisplay.h"
 
-DisplayLCD::DisplayLCD(
+LCDDisplay::LCDDisplay(
   TinyLCD *lcd,
   State *state//,
   // Storage *store
@@ -11,7 +11,7 @@ DisplayLCD::DisplayLCD(
   // _store = store;
 }
 
-void DisplayLCD::setup()
+void LCDDisplay::setup()
 {
   // move some LCD pins to analog
   for (uint8_t p = 15; p <= 18; p++) {
@@ -31,29 +31,29 @@ void DisplayLCD::setup()
   // _totalTrips = _store->countTrips();
 }
 
-void DisplayLCD::renderCompassScreen()
+void LCDDisplay::renderCompassScreen()
 {
+  uint8_t viewAngle = 90;
+  uint8_t halfViewAngle = viewAngle / 2;
+  float divider = 360 / (16 * (360 / viewAngle));
+
   // get the diff
   int16_t _relativeBearing = _state->currentLocation.bearingTo(&_state->destinationLocation) - _state->course;
-  // make sure it's absolute
-  if (_relativeBearing < 0) {
-    _relativeBearing = 360 + _relativeBearing;
-  }
-  if (_relativeBearing >= 90 && _relativeBearing < 180) {
+  if (_relativeBearing >= halfViewAngle && _relativeBearing < 180) {
     // out of range, course right being shortest
     _lcd->setCursor(14, 0);
     _lcd->print("=>");
-  } else if (_relativeBearing >= 180 && _relativeBearing <= 270) {
+  } else if (_relativeBearing >= 180 && _relativeBearing <= (360 - halfViewAngle)) {
     // out of range, course left being shortest
     _lcd->setCursor(0, 0);
     _lcd->print("<=");
   } else {
     // destination within 180 degrees view
-    if (_relativeBearing < 180) {
-      _lcd->setCursor(round(_relativeBearing / 11.25) + 7, 0);
+    if (_relativeBearing < viewAngle) {
+      _lcd->setCursor(round(_relativeBearing / divider) + 7, 0);
       _lcd->print("<>");
     } else {
-      int8_t _cursorPos = 7 - round((360 - _relativeBearing) / 11.25);
+      int8_t _cursorPos = 7 - round((360 - _relativeBearing) / divider);
       if (_cursorPos < 0) {
         _lcd->setCursor(0, 0);
         _lcd->print(">");
@@ -67,13 +67,14 @@ void DisplayLCD::renderCompassScreen()
 
   // get course string
   _lcd->setCursor(0, 1);
-  uint8_t _cutStart = round(_state->course / 11.25);
+  uint8_t _cutStart = round(_state->course / divider);
+  const char* courseString = viewAngle == 180 ? _courseString180 : _courseString90;
   for (uint8_t k = _cutStart; k <= _cutStart + 16; k++) {
     char character;
     if (k > 31) {
-      character = (char) pgm_read_byte_near(&_courseString[k - 32]);
+      character = (char) pgm_read_byte_near(&courseString[k - 32]);
     } else {
-      character = (char) pgm_read_byte_near(&_courseString[k]);
+      character = (char) pgm_read_byte_near(&courseString[k]);
     }
     if (character == 'n') {
       _lcd->write(byte(0));
@@ -97,7 +98,7 @@ void DisplayLCD::renderCompassScreen()
   }
 }
 
-void DisplayLCD::renderProgressScreen()
+void LCDDisplay::renderProgressScreen()
 {
   // get distance between start & current
   float distanceTravelled = _state->startingLocation.distanceTo(&_state->currentLocation) / 1000;
@@ -105,10 +106,10 @@ void DisplayLCD::renderProgressScreen()
   float distanceRemaining = _state->currentLocation.distanceTo(&_state->destinationLocation) / 1000;
   // get distance between start & current + current & end
   float totalDistance = distanceTravelled + distanceRemaining;
-  uint8_t progress = (distanceTravelled / totalDistance) * 100;
+  uint8_t progress = round((distanceTravelled / totalDistance) * 100);
   // get progress string
   _lcd->setCursor(0, 0);
-  uint8_t progressBlocks = round(progress * 0.16);
+  uint8_t progressBlocks = round(progress * 0.15);
   for (uint8_t j = 0; j < 16; j++) {
     if (j == progressBlocks) {
       _lcd->print(">");
@@ -119,10 +120,12 @@ void DisplayLCD::renderProgressScreen()
     }
   }
   // make sure we don't write the progress on top of the arrow
-  if (progressBlocks > 5) {
+  if (progressBlocks > 5 && progressBlocks < 12) {
+    // add the progress on the left side of the screen with 1 char padding
     _lcd->setCursor(1, 0);
   } else {
-    _lcd->setCursor(7, 0);
+    // add the progress as centered as we can
+    _lcd->setCursor(6 + (3 - String(progress).length()), 0);
   }
   _lcd->print(progress); _lcd->print("%");
   _lcd->setCursor(0, 1);
@@ -136,7 +139,7 @@ void DisplayLCD::renderProgressScreen()
   _lcd->print("KM "); _lcd->print(String(distanceTravelled, decimalPrecision)); _lcd->print("/"); _lcd->print(String(totalDistance, decimalPrecision));
 }
 
-// void DisplayLCD::renderSpeedScreen()
+// void LCDDisplay::renderSpeedScreen()
 // {
 //   _lcd->setCursor(0, 0);
 //   _lcd->print("NOW: "); _lcd->print(String(_gps->getSpeed(), 2)); _lcd->print(" km/h");
@@ -144,7 +147,7 @@ void DisplayLCD::renderProgressScreen()
 //   _lcd->print("TOP: "); _lcd->print(String(_state->topSpeed, 2)); _lcd->print(" km/h");
 // }
 
-// void DisplayLCD::renderPositionScreen()
+// void LCDDisplay::renderPositionScreen()
 // {
 //   Location* location = _gps->getLocation();
 //   _lcd->setCursor(0, 0);
@@ -153,7 +156,7 @@ void DisplayLCD::renderProgressScreen()
 //   _lcd->print("LNG: "); _lcd->print(String(location->longitude, 8));
 // }
 
-// void DisplayLCD::renderStatsScreen()
+// void LCDDisplay::renderStatsScreen()
 // {
 //   _lcd->setCursor(0, 0);
 //   String speedStr = String(_state->topSpeed, 2);
@@ -163,7 +166,7 @@ void DisplayLCD::renderProgressScreen()
 //   _lcd->print("DIS: "); _lcd->print(distanceStr); _lcd->print(" km");
 // }
 
-// void DisplayLCD::renderGPSScreen()
+// void LCDDisplay::renderGPSScreen()
 // {
 //   _lcd->setCursor(0, 0);
 //   _lcd->print("F: "); _lcd->print(_gps->getFix() ? "1" : "0"); _lcd->print(", FQ: "); _lcd->print(_gps->getFixQuality());
@@ -181,7 +184,7 @@ void DisplayLCD::renderProgressScreen()
 //   _currentTrip++;
 // }
 
-// void DisplayLCD::renderTripSelectorScreen()
+// void LCDDisplay::renderTripSelectorScreen()
 // {
 //   if (_tripSelectionIndex != _lastTripSelectionIndex || _forceRedraw) {
 //     uint8_t page = floor(_tripSelectionIndex / 2);
@@ -204,7 +207,7 @@ void DisplayLCD::renderProgressScreen()
 //   }
 // }
 
-// void DisplayLCD::scrollTrips()
+// void LCDDisplay::scrollTrips()
 // {
 //   _tripSelectionIndex++;
 //   if (_tripSelectionIndex == _totalTrips) {
@@ -212,20 +215,20 @@ void DisplayLCD::renderProgressScreen()
 //   }
 // }
 
-// void DisplayLCD::selectTrip()
+// void LCDDisplay::selectTrip()
 // {
 //   _state->activeScreen = 0;
 //   Location newDestination =  _store->getTripDestination(_tripnames[_tripSelectionIndex % 2]);
 //   _state->destinationLocation = &newDestination;
 // }
 
-// void DisplayLCD::resetTripSelectionIndex() {
+// void LCDDisplay::resetTripSelectionIndex() {
 //   _state->activeScreen = 255;
 //   _tripSelectionIndex = 0;
 //   _forceRedraw = true;
 // }
 
-// void DisplayLCD::next()
+// void LCDDisplay::next()
 // {
 //   if (_state->activeScreen == 255) {
 //     scrollTrips();
@@ -237,14 +240,14 @@ void DisplayLCD::renderProgressScreen()
 //   }
 // }
 
-void DisplayLCD::renderWaitingScreen()
+void LCDDisplay::renderWaitingScreen()
 {
  _lcd->setCursor(0, 0);
  _lcd->print("Waiting on GPS..");
 }
 
 uint8_t activeScreen = 0;
-void DisplayLCD::loop(bool shouldUpdate)
+void LCDDisplay::loop(bool shouldUpdate)
 {
   unsigned long now = millis();
   if (now - _lastRenderTime >= _renderInterval) {

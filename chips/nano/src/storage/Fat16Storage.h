@@ -1,16 +1,14 @@
-#ifndef h_Storage
-#define h_Storage
+#ifndef h_Fat16Storage
+#define h_Fat16Storage
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include <Fat16.h>
-#include "Location.h"
-#include "State.h"
 
 typedef void (*OnValue)(const char* line);
 
-class Storage {
+class Fat16Storage {
   public:
-    Storage(uint8_t csPin);
+    Fat16Storage(uint8_t csPin);
     void setup();
     void append(const char* file, const char* line);
     void getLines(const char* file, OnValue callback);

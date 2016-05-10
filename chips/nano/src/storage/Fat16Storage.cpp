@@ -1,17 +1,17 @@
-#include "Storage.h"
+#include "Fat16Storage.h"
 
-Storage::Storage(uint8_t csPin) {
+Fat16Storage::Fat16Storage(uint8_t csPin) {
   _csPin = csPin;
 }
 
-void Storage::setup()
+void Fat16Storage::setup()
 {
   pinMode(_csPin, OUTPUT);
   _sd.begin(_csPin, SPI_EIGHTH_SPEED);
   Fat16::init(&_sd);
 }
 
-void Storage::append(const char* file, const char* line)
+void Fat16Storage::append(const char* file, const char* line)
 {
   Fat16 _file;
   _file.open(file, O_CREAT | O_APPEND | O_WRITE);
@@ -19,7 +19,7 @@ void Storage::append(const char* file, const char* line)
   _file.close();
 }
 
-void Storage::getLines(const char* file, OnValue callback)
+void Fat16Storage::getLines(const char* file, OnValue callback)
 {
   Fat16 _file;
   char lineBuffer[100];
