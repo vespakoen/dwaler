@@ -4,8 +4,8 @@
 #include "State.h"
 #include "Location.h"
 
-Location startingLocation = {52.50497, 13.4287313};
-Location destinationLocation = {50.7997071, 5.7300786};
+Location startingLocation = {50.7997071, 5.7300786};
+Location destinationLocation = {52.50497, 13.4287313};
 State state = {startingLocation, destinationLocation};
 
 Fat16Storage storage(4);                         // (CS)
@@ -25,9 +25,9 @@ void setup() {
 uint32_t timer = millis();
 void loop() {
   bool shouldUpdate = false;
-  if (millis() - timer > 3000) {
+  if (millis() - timer > 500) {
     if (state.fix) {
-      Serial.println(state.toString());
+      // Serial.println(state.toString());
       storage.append("LOG", state.toString().c_str());
     }
     shouldUpdate = true;

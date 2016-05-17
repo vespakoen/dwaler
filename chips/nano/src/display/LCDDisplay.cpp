@@ -35,10 +35,12 @@ void LCDDisplay::renderCompassScreen()
 {
   uint8_t viewAngle = 90;
   uint8_t halfViewAngle = viewAngle / 2;
-  float divider = 360 / (16 * (360 / viewAngle));
-
+  float degreesPerBlock = viewAngle == 90 ? 5.625 : 11.25; // viewAngle / 16
   // get the diff
   int16_t _relativeBearing = _state->currentLocation.bearingTo(&_state->destinationLocation) - _state->course;
+  if (_relativeBearing < 0) {
+    _relativeBearing += 360;
+  }
   if (_relativeBearing >= halfViewAngle && _relativeBearing < 180) {
     // out of range, course right being shortest
     _lcd->setCursor(14, 0);
@@ -50,10 +52,10 @@ void LCDDisplay::renderCompassScreen()
   } else {
     // destination within 180 degrees view
     if (_relativeBearing < viewAngle) {
-      _lcd->setCursor(round(_relativeBearing / divider) + 7, 0);
+      _lcd->setCursor(round(_relativeBearing / degreesPerBlock) + 7, 0);
       _lcd->print("<>");
     } else {
-      int8_t _cursorPos = 7 - round((360 - _relativeBearing) / divider);
+      int8_t _cursorPos = 7 - round((360 - _relativeBearing) / degreesPerBlock);
       if (_cursorPos < 0) {
         _lcd->setCursor(0, 0);
         _lcd->print(">");
@@ -67,12 +69,13 @@ void LCDDisplay::renderCompassScreen()
 
   // get course string
   _lcd->setCursor(0, 1);
-  uint8_t _cutStart = round(_state->course / divider);
+  uint8_t _cutStart = round(_state->course / degreesPerBlock);
   const char* courseString = viewAngle == 180 ? _courseString180 : _courseString90;
+  uint8_t compassStringLength = viewAngle == 180 ? 32 : 64;
   for (uint8_t k = _cutStart; k <= _cutStart + 16; k++) {
     char character;
-    if (k > 31) {
-      character = (char) pgm_read_byte_near(&courseString[k - 32]);
+    if (k > (compassStringLength - 1)) {
+      character = (char) pgm_read_byte_near(&courseString[k - compassStringLength]);
     } else {
       character = (char) pgm_read_byte_near(&courseString[k]);
     }
@@ -256,15 +259,14 @@ void LCDDisplay::loop(bool shouldUpdate)
     // clear from here to reduce sketch size, renderTripSelectorScreen does it's own clearing
     _lcd->clear();
     _lastRenderTime = now;
-    if (activeScreen == 2) {
+    if (activeScreen == 3) {
       activeScreen = 0;
     } else {
       activeScreen++;
     }
     if (!_state->fix) return renderWaitingScreen();
-    if (activeScreen == 0) return renderCompassScreen();
-    if (activeScreen == 1) return renderCompassScreen();
-    if (activeScreen == 2) return renderProgressScreen();
+    if (activeScreen < 3) return renderCompassScreen();
+    return renderProgressScreen();
     // if (activeScreen == 2) return renderSpeedScreen();
     // if (activeScreen == 3) return renderPositionScreen();
     // if (activeScreen == 4) return renderStatsScreen();

@@ -7,7 +7,7 @@
 #include "../State.h"
 
 const char _courseString180[] PROGMEM = "W+nNwW+nN+nNeE+eE+eEsS+sS+sSwW+w";
-const char _courseString90[]  PROGMEM = "W--+--nNwW--+--nN--+--nNeE--+--eE--+--eEsS--+--sS--+--sSwW--+--w";
+const char _courseString90[]  PROGMEM = "wW--+--nN--+--nNeE--+--eE--+--sSeE--+--sS--+--sSwW--+--wW--+--nN";
 
 const uint8_t n[8] PROGMEM = {
   B11110,
