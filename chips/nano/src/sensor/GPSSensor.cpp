@@ -41,7 +41,7 @@ void GPSSensor::loop(bool shouldUpdate)
         _state->topSpeed = _state->speed;
       }
       // update travelled distance
-      _state->travelledDistance = _state->travelledDistance + _state->currentLocation.distanceTo(&lastLocation);
+      _state->travelledDistance = _state->travelledDistance + _state->currentLocation.distanceTo(lastLocation);
       // update timestamp
       int year;
       byte month, day, hour, minute, second, hundredths;

@@ -7,8 +7,8 @@ typedef struct Location {
   float latitude;
   float longitude;
   float altitude;
-  float distanceTo(Location* location);
-  uint16_t bearingTo(Location* location);
+  float distanceTo(Location location);
+  uint16_t bearingTo(Location location);
 } Location;
 
 #endif

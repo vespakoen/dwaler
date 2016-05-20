@@ -37,7 +37,7 @@ void LCDDisplay::renderCompassScreen()
   uint8_t halfViewAngle = viewAngle / 2;
   float degreesPerBlock = viewAngle == 90 ? 5.625 : 11.25; // viewAngle / 16
   // get the diff
-  int16_t _relativeBearing = _state->currentLocation.bearingTo(&_state->destinationLocation) - _state->course;
+  int16_t _relativeBearing = _state->currentLocation.bearingTo(_state->destinationLocation) - _state->course;
   if (_relativeBearing < 0) {
     _relativeBearing += 360;
   }
@@ -104,9 +104,9 @@ void LCDDisplay::renderCompassScreen()
 void LCDDisplay::renderProgressScreen()
 {
   // get distance between start & current
-  float distanceTravelled = _state->startingLocation.distanceTo(&_state->currentLocation) / 1000;
+  float distanceTravelled = _state->startingLocation.distanceTo(_state->currentLocation) / 1000;
   // get distance between current & end
-  float distanceRemaining = _state->currentLocation.distanceTo(&_state->destinationLocation) / 1000;
+  float distanceRemaining = _state->currentLocation.distanceTo(_state->destinationLocation) / 1000;
   // get distance between start & current + current & end
   float totalDistance = distanceTravelled + distanceRemaining;
   uint8_t progress = round((distanceTravelled / totalDistance) * 100);

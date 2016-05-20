@@ -1,18 +1,16 @@
 #include "Location.h"
 
-float Location::distanceTo(Location *toLocation)
+float Location::distanceTo(Location toLocation)
 {
   float distance = 0;
   float distance2 = 0;
   float latitudeDifference = 0;
   float longitudeDistance = 0;
-  latitudeDifference = radians(toLocation->latitude - latitude);
-  latitude = radians(latitude);
-  toLocation->latitude = radians(toLocation->latitude);
-  longitudeDistance = radians((toLocation->longitude) - (longitude));
+  latitudeDifference = radians(toLocation.latitude - latitude);
+  longitudeDistance = radians((toLocation.longitude) - (longitude));
   distance = (sin(latitudeDifference / 2.0) * sin(latitudeDifference / 2.0));
-  distance2 = cos(latitude);
-  distance2 *= cos(toLocation->latitude);
+  distance2 = cos(radians(latitude));
+  distance2 *= cos(radians(toLocation.latitude));
   distance2 *= sin(longitudeDistance / 2.0);
   distance2 *= sin(longitudeDistance / 2.0);
   distance += distance2;
@@ -22,13 +20,13 @@ float Location::distanceTo(Location *toLocation)
   return distance;
 }
 
-uint16_t Location::bearingTo(Location *toLocation)
+uint16_t Location::bearingTo(Location toLocation)
 {
   float result;
   result = degrees(
     atan2(
-      69.1 * (toLocation->longitude - longitude) * cos(latitude / 57.3),
-      69.1 * (toLocation->latitude - latitude)
+      69.1 * (toLocation.longitude - longitude) * cos(latitude / 57.3),
+      69.1 * (toLocation.latitude - latitude)
     )
   );
   if (result < 0) {
