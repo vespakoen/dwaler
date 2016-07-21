@@ -8,7 +8,7 @@ class SerialStream {
         parser: SerialPort.parsers.readline('\n')
       })
       serial.on('open', resolve(new SerialStream(serial)))
-      serial.on('error', err => console.error('Error:', err.message))
+      serial.on('error', err => console.error('Error:', err))
     })
   }
 
@@ -23,7 +23,9 @@ class SerialStream {
   emitCommand(command) {
     this.serial.write(command, err => {
       if (err) {
-        return console.error('Error on write:', err.message)
+        console.error('Error on write:', err)
+        console.warn('Retrying in 1 second...')
+        setTimeout(this.emitCommand.bind(this, command), 1000)
       }
     })
   }
