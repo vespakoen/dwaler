@@ -2,43 +2,35 @@ import React, {
   Component
 } from 'react'
 
-import Dwaler from './services/dwaler'
+const Dwaler = electronRequire('dwaler-client/node')
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      state: 'unknown',
-      trips: [],
-      traces: [],
-      rapport: 'unknown'
+      location: null,
+      state: null,
+      destinations: null,
+      trips: null
     }
   }
 
   componentDidMount() {
-    Dwaler.connect()
+    Dwaler.connect('/dev/cu.wchusbserial1410')
       .then(dwaler => {
-        dwaler.getPosition().then(position => this.setState({ position }))
+        dwaler.getLocation().then(location => this.setState({ location }))
         dwaler.getState().then(state => this.setState({ state }))
-        dwaler.getRapport().then(rapport => this.setState({ rapport }))
-        dwaler.getTrips(trip => {
-          this.state.trips.push(trip);
-          dwaler.getTrace(trip.name, 1, trace => {
-            this.state.traces.push([trip.name, trace]);
-            this.setState({ traces: this.state.traces })
-          })
-          this.setState({ trips: this.state.trips })
-        })
+        dwaler.getDestinations().then(destinations => this.setState({ destinations }))
       })
   }
 
   render() {
+    return <div>Hi =)</div>
     return (
       <div>
+        Location: <pre>{ JSON.stringify(this.state.location, undefined, 2) }</pre><br />
         State: <pre>{ JSON.stringify(this.state.state, undefined, 2) }</pre><br />
-        Trips: <pre>{ JSON.stringify(this.state.trips, undefined, 2) }</pre><br />
-        Traces: <pre>{ JSON.stringify(this.state.traces, undefined, 2) }</pre><br />
-        Rapport: <pre>{ JSON.stringify(this.state.rapport, undefined, 2) }</pre>
+        Trips: <pre>{ JSON.stringify(this.state.destinations, undefined, 2) }</pre>
       </div>
     )
   }

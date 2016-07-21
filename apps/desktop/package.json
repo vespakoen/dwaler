@@ -6,7 +6,8 @@
   "scripts": {
     "start": "electron index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "browserify -t babelify src/ui/index.js > ui.js",
+    "postinstall": "rm -rf ./node_modules/serialport/build/Release/* && ./node_modules/.bin/electron-rebuild -e ./node_modules/electron-prebuilt -f",
+    "build": "browserify --debug -t babelify src/ui/index.js > ui.js",
     "release": "electron-packager . --all --out build"
   },
   "author": "",
@@ -22,10 +23,13 @@
     "electron-dl": "^0.2.0",
     "electron-packager": "^6.0.0",
     "electron-prebuilt": "^0.37.2",
+    "electron-rebuild": "^1.1.5",
     "react": "^0.14.8",
     "react-dom": "^0.14.8"
   },
   "dependencies": {
-    "node-fetch": "^1.4.1"
+    "dwaler-client": "^0.1.2",
+    "node-fetch": "^1.4.1",
+    "serialport": "^4.0.1"
   }
 }
