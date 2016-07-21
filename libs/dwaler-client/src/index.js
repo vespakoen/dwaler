@@ -1,16 +1,7 @@
-const defaultUrl = 'ws://192.168.1.4:8081'
-
-class Dwaler {
-  static connect(url = defaultUrl) {
-    return new Promise(resolve => {
-      const ws = new WebSocket(url)
-      ws.onopen = () => resolve(new Dwaler(ws))
-    })
-  }
-
-  constructor(ws) {
-    this.ws = ws
-    this.ws.onmessage = this.onMessage.bind(this)
+class DwalerClient {
+  constructor(stream) {
+    this.stream = stream
+    stream.onEvent(this.onEvent.bind(this))
     this.cbs = {}
     this.doneCbs = {}
   }
@@ -23,39 +14,39 @@ class Dwaler {
     return this.call('state', [], cb)
   }
 
-  getDestinations(onTrip = null, cb = null) {
-    if (onTrip === null) {
+  getDestinations(onDestination = null, cb = null) {
+    if (onDestination === null) {
       return this.getDestinationsPromise()
     }
-    return this.call('destination', [], onTrip, cb)
+    return this.call('destination', [], onDestination, cb)
   }
 
-  getTrace(destinationName, traceNum, onTrace = null, cb = null) {
-    if (onTrace === null) {
-      return this.getTracePromise(destinationName, traceNum)
+  getTrip(destinationName, tripNum, onCoord = null, cb = null) {
+    if (onCoord === null) {
+      return this.getTripPromise(destinationName, tripNum)
     }
-    return this.call('trace', [destinationName, traceNum], onTrace, cb)
+    return this.call('trip', [destinationName, tripNum], onCoord, cb)
   }
 
   getDestinationsPromise() {
     return new Promise(resolve => {
-      const trips = []
-      this.getDestinations(trip => {
-        trips.push(trip)
-      }, () => resolve(trips))
+      const destinations = []
+      this.getDestinations(destination => {
+        destinations.push(destination)
+      }, () => resolve(destinations))
     })
   }
 
-  getTracePromise(destinationName, traceNum) {
+  getTripPromise(destinationName, tripNum) {
     return new Promise(resolve => {
       const coords = []
-      this.getTrace(destinationName, traceNum, coord => {
+      this.getTrip(destinationName, tripNum, coord => {
         coords.push(coord)
       }, () => resolve(coords))
     })
   }
 
-  onMessage(e) {
+  onEvent(e) {
     const parts = e.data.split(',')
     const commandId = parts[0]
     const commandName = parts[1]
@@ -88,7 +79,7 @@ class Dwaler {
           },
           topSpeed: Number(parts[13]),
           travelledDistance: Number(parts[14]),
-          traceNum: Number(parts[15]),
+          tripNum: Number(parts[15]),
           heading: Number(parts[16]),
           temp: Number(parts[17]),
           rpm: Number(parts[18])
@@ -101,9 +92,9 @@ class Dwaler {
             longitude: Number(parts[4]),
             altitude: Number(parts[5])
           },
-          traceCount: Number(parts[6])
+          tripCount: Number(parts[6])
         })
-      case 'trace':
+      case 'trip':
         return this.cbs[commandId]({
           latitude: Number(parts[2]),
           longitude: Number(parts[3]),
@@ -132,14 +123,14 @@ class Dwaler {
       if (doneCb !== null) {
         this.doneCbs[commandId] = doneCb
       }
-      this.ws.send(command)
+      this.stream.emitCommand(command)
       return
     }
     return new Promise(resolve => {
       this.cbs[commandId] = resolve
-      this.ws.send(command)
+      this.stream.emitCommand(command)
     })
   }
 }
 
-export default Dwaler
+export default DwalerClient

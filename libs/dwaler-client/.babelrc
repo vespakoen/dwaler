@@ -1,4 +1,3 @@
 {
-  "presets": ["es2015", "react"],
-  "plugins": ["async-to-promises"]
+  "presets": ["stage-0", "es2015"]
 }
