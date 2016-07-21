@@ -27,7 +27,7 @@ var SerialStream = function () {
         });
         serial.on('open', resolve(new SerialStream(serial)));
         serial.on('error', function (err) {
-          return console.error('Error:', err.message);
+          return console.error('Error:', err);
         });
       });
     }
@@ -47,9 +47,13 @@ var SerialStream = function () {
   }, {
     key: 'emitCommand',
     value: function emitCommand(command) {
+      var _this = this;
+
       this.serial.write(command, function (err) {
         if (err) {
-          return console.error('Error on write:', err.message);
+          console.error('Error on write:', err);
+          console.warn('Retrying in 1 second...');
+          setTimeout(_this.emitCommand.bind(_this, command), 1000);
         }
       });
     }
