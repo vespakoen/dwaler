@@ -54,7 +54,7 @@ var DwalerClient = function () {
     value: function getDestinations() {
       var onDestination = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
-      return this.emitCommand('destination', [], onDestination);
+      return this.emitCommand('dests', [], onDestination);
     }
   }, {
     key: 'getTripRows',
@@ -96,7 +96,7 @@ var DwalerClient = function () {
       var cb = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
       var skipHeader = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
 
-      var commandId = Math.floor(Math.random() * 65534); // uint16_t max
+      var commandId = Math.floor(Math.random() * 65535); // uint16_t max
       if (this.cbs[commandId]) return this.emitCommand(commandName, args, cb); // retry if commandId is already taken
       var argsStr = args.length > 0 ? ',' + args.join(',') : '';
       var command = commandId + ',' + commandName + argsStr;

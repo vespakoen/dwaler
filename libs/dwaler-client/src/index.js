@@ -25,7 +25,7 @@ class DwalerClient {
   }
 
   getDestinations(onDestination = null) {
-    return this.emitCommand('destination', [], onDestination)
+    return this.emitCommand('dests', [], onDestination)
   }
 
   getTripRows(destinationName, tripNum, onTripRow = null) {
