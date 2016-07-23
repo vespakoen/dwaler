@@ -67,7 +67,7 @@ var DwalerClient = function () {
     value: function getTrips(destinationName) {
       var onTrip = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
-      return this.emitCommand('trip', [destinationName], onTrip);
+      return this.emitCommand('trips', [destinationName], onTrip);
     }
   }, {
     key: 'getTripRows',
