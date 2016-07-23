@@ -1,21 +1,11 @@
 #include "State.h"
 
-String State::liveHeaderToString()
-{
-  return "ts,lat,lng,alt";
-}
-
 String State::liveToString()
 {
   return String(timestamp) + "," +
     String(currentLocation.latitude, 6) + "," +
     String(currentLocation.longitude, 6) + "," +
     String(currentLocation.altitude, 2);
-}
-
-String State::regularHeaderToString()
-{
-  return "slat,slng,dlat,dlng,sats,fix,fix,top,distance";
 }
 
 String State::regularToString()

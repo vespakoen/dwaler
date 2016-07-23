@@ -17,9 +17,7 @@ typedef struct State {
     float topSpeed;
     float avgSpeed;
     float travelledDistance;
-    String liveHeaderToString();
     String liveToString();
-    String regularHeaderToString();
     String regularToString();
 } State;
 

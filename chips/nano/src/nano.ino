@@ -30,6 +30,18 @@ String regularCommandId = "";
 char parsedCommand[50];
 uint8_t parseIndex = 0;
 
+String destinationCommandId = "";
+void onDestination(const char* line)
+{
+  Serial.println(destinationCommandId + "," + String(line));
+}
+
+String tripCommandId = "";
+void onTripRow(const char* line)
+{
+  Serial.println(tripCommandId + "," + String(line));
+}
+
 void loop() {
   bool shouldUpdate = false;
 
@@ -50,14 +62,14 @@ void loop() {
       if (command == "live") {
         liveCommandId = commandId;
       }
-      if (command == "liveh") {
-        Serial.println(commandId + "," + state.liveHeaderToString());
+      if (command == "liveh" || command == "triph") {
+        Serial.println(commandId + ",ts,lat,lng,alt");
       }
       if (command == "regular") {
         regularCommandId = commandId;
       }
-      if (command == "regularh") {
-        Serial.println(commandId + "," + state.regularHeaderToString());
+      if (command == "regularh" || command == "stateh") {
+        Serial.println(commandId + ",slat,slng,dlat,dlng,sats,fix,fix,top,distance");
       }
       if (command == "liveoff") {
         liveCommandId = "";
@@ -68,8 +80,18 @@ void loop() {
       if (command == "state") {
         Serial.println(commandId + "," + state.regularToString());
       }
-      if (command == "stateh") {
-        Serial.println(commandId + "," + state.regularHeaderToString());
+      if (command == "dests") {
+        destinationCommandId = commandId;
+        storage.getLines("DESTS", onDestination);
+      }
+      if (command == "destsh") {
+        Serial.println(commandId + ",name,lat,lng");
+      }
+      if (command == "trip") {
+        tripCommandId = commandId;
+        String tripFile = remainder;
+        tripFile.replace(',', '-');
+        storage.getLines(tripFile.c_str(), onTripRow);
       }
       parsedCommand[0] = '\0';
       parseIndex = 0;
