@@ -1,13 +1,13 @@
 {
   "name": "dwaler-client",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "",
   "main": "node.js",
   "browser": "browser.js",
   "electron": "node.js",
   "scripts": {
     "build": "babel --out-dir lib src",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "author": "Koen Schmeets <hello@koenschmeets.nl>",
   "license": "MIT",

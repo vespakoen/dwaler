@@ -2,7 +2,7 @@
 
 String State::liveHeaderToString()
 {
-  return "timestamp,currentLocation:latitude,longitude,altitude";
+  return "ts,lat,lng,alt";
 }
 
 String State::liveToString()
@@ -15,7 +15,7 @@ String State::liveToString()
 
 String State::regularHeaderToString()
 {
-  return "startingLocation:latitude,longitude,destinationLocation:latitude,longitude,satellites,fix,fixquality,topSpeed,travelledDistance";
+  return "slat,slng,dlat,dlng,sats,fix,fix,top,distance";
 }
 
 String State::regularToString()

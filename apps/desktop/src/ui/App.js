@@ -8,8 +8,9 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      location: null,
       state: null,
+      live: null,
+      regular: null,
       destinations: null,
       trips: null
     }
@@ -18,19 +19,21 @@ class App extends Component {
   componentDidMount() {
     Dwaler.connect('/dev/cu.wchusbserial1410')
       .then(dwaler => {
-        dwaler.getLocation().then(location => this.setState({ location }))
-        dwaler.getState().then(state => this.setState({ state }))
-        dwaler.getDestinations().then(destinations => this.setState({ destinations }))
+        dwaler.getState(state => this.setState({ state }))
+        this.stopLive = dwaler.startLive(live => this.setState({ live }))
+        this.stopRegular = dwaler.startRegular(regular => this.setState({ regular }))
       })
   }
 
+  componentWillUnmount() {
+    if (this.stopLive) this.stopLive()
+    if (this.stopRegular) this.stopRegular()
+  }
+
   render() {
-    return <div>Hi =)</div>
     return (
       <div>
-        Location: <pre>{ JSON.stringify(this.state.location, undefined, 2) }</pre><br />
-        State: <pre>{ JSON.stringify(this.state.state, undefined, 2) }</pre><br />
-        Trips: <pre>{ JSON.stringify(this.state.destinations, undefined, 2) }</pre>
+        {JSON.stringify(this.state)}
       </div>
     )
   }

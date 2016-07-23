@@ -5,9 +5,13 @@ class SerialStream {
     return new Promise(resolve => {
       var serial = new SerialPort(device, {
         baudRate,
-        parser: SerialPort.parsers.readline('\n')
+        parser: SerialPort.parsers.readline('\r\n')
       })
-      serial.on('open', resolve(new SerialStream(serial)))
+      serial.on('open', () =>
+        setTimeout(() => {
+          resolve(new SerialStream(serial))
+        }, 2000)
+      )
       serial.on('error', err => console.error('Error:', err))
     })
   }
@@ -17,11 +21,15 @@ class SerialStream {
   }
 
   onEvent(cb) {
-    this.serial.on('data', cb)
+    this.serial.on('data', event => {
+      console.log(`<- ${event}`)
+      cb(event)
+    })
   }
 
   emitCommand(command) {
-    this.serial.write(command, err => {
+    console.log(`-> ${command}`)
+    this.serial.write(command + '\n', err => {
       if (err) {
         console.error('Error on write:', err)
         console.warn('Retrying in 1 second...')

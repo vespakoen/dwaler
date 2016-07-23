@@ -24,20 +24,72 @@ void setup() {
 
 uint32_t timer = millis();
 uint8_t divider = 1;
+bool isParsing = false;
+String liveCommandId = "";
+String regularCommandId = "";
+char parsedCommand[50];
+uint8_t parseIndex = 0;
+
 void loop() {
   bool shouldUpdate = false;
+
+  while (Serial.available()) {
+    char c = Serial.read();
+    if (c != '\n' && c != '\r') {
+      parsedCommand[parseIndex] = c;
+      parseIndex++;
+    } else {
+      parsedCommand[parseIndex] = '\0';
+      String parsedCommandStr = String(parsedCommand);
+      uint8_t seperatorIndex = parsedCommandStr.indexOf(',');
+      String commandId = parsedCommandStr.substring(0, seperatorIndex);
+      String remainder = parsedCommandStr.substring(seperatorIndex + 1);
+      seperatorIndex = remainder.indexOf(',');
+      String command = remainder.substring(0, seperatorIndex);
+      remainder = remainder.substring(seperatorIndex + 1);
+      if (command == "live") {
+        liveCommandId = commandId;
+      }
+      if (command == "liveh") {
+        Serial.println(commandId + "," + state.liveHeaderToString());
+      }
+      if (command == "regular") {
+        regularCommandId = commandId;
+      }
+      if (command == "regularh") {
+        Serial.println(commandId + "," + state.regularHeaderToString());
+      }
+      if (command == "liveoff") {
+        liveCommandId = "";
+      }
+      if (command == "regularoff") {
+        regularCommandId = "";
+      }
+      if (command == "state") {
+        Serial.println(commandId + "," + state.regularToString());
+      }
+      if (command == "stateh") {
+        Serial.println(commandId + "," + state.regularHeaderToString());
+      }
+      parsedCommand[0] = '\0';
+      parseIndex = 0;
+    }
+  }
+
   if (millis() - timer > 500) {
     if (divider % 4 == 0 || divider % 8 == 0 || divider % 12 == 0 || divider % 16 == 0) {
-      Serial.println("r:" + state.regularToString());
+      if (regularCommandId != "") {
+        Serial.println(regularCommandId + "," + state.regularToString());
+      }
     }
     if (divider % 16 == 0) {
-      Serial.println("hl:" + state.liveHeaderToString());
-      Serial.println("hr:" + state.regularHeaderToString());
       divider = 1;
     } else {
       divider++;
     }
-    Serial.println("l:" + state.liveToString());
+    if (liveCommandId != "") {
+      Serial.println(liveCommandId + "," + state.liveToString());
+    }
     if (state.fix) {
       storage.append("LOG", state.liveToString().c_str());
     }

@@ -23,9 +23,13 @@ var SerialStream = function () {
       return new Promise(function (resolve) {
         var serial = new _serialport2.default(device, {
           baudRate: baudRate,
-          parser: _serialport2.default.parsers.readline('\n')
+          parser: _serialport2.default.parsers.readline('\r\n')
         });
-        serial.on('open', resolve(new SerialStream(serial)));
+        serial.on('open', function () {
+          return setTimeout(function () {
+            resolve(new SerialStream(serial));
+          }, 2000);
+        });
         serial.on('error', function (err) {
           return console.error('Error:', err);
         });
@@ -42,14 +46,18 @@ var SerialStream = function () {
   _createClass(SerialStream, [{
     key: 'onEvent',
     value: function onEvent(cb) {
-      this.serial.on('data', cb);
+      this.serial.on('data', function (event) {
+        console.log('<- ' + event);
+        cb(event);
+      });
     }
   }, {
     key: 'emitCommand',
     value: function emitCommand(command) {
       var _this = this;
 
-      this.serial.write(command, function (err) {
+      console.log('-> ' + command);
+      this.serial.write(command + '\n', function (err) {
         if (err) {
           console.error('Error on write:', err);
           console.warn('Retrying in 1 second...');
