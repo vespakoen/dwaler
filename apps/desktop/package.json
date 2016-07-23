@@ -28,7 +28,7 @@
     "react-dom": "^0.14.8"
   },
   "dependencies": {
-    "dwaler-client": "^0.2.1",
+    "dwaler-client": "^0.2.2",
     "node-fetch": "^1.4.1",
     "serialport": "^4.0.1"
   }

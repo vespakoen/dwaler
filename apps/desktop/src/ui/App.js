@@ -8,7 +8,6 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      state: null,
       live: null,
       regular: null,
       destinations: [],
@@ -19,7 +18,6 @@ class App extends Component {
   componentDidMount() {
     Dwaler.connect('/dev/cu.wchusbserial1410')
       .then(dwaler => {
-        dwaler.getState(state => this.setState({ state }))
         dwaler.getDestinations(destination => {
           const { destinations } = this.state
           destinations.push(destination)
@@ -34,7 +32,6 @@ class App extends Component {
           trips[tripName][tripNum].push(tripRow)
           this.setState({ trips })
         })
-        dwaler.getState(state => this.setState({ state }))
         this.stopLive = dwaler.startLive(live => this.setState({ live }))
         this.stopRegular = dwaler.startRegular(regular => this.setState({ regular }))
       })
