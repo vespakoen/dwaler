@@ -65,6 +65,7 @@ class DwalerClient {
         this.stream.emitCommand(command)
         headerStop()
       }, true)
+      return
     }
     this.stream.emitCommand(command)
     return () => {

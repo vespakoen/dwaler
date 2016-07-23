@@ -110,6 +110,7 @@ var DwalerClient = function () {
           _this4.stream.emitCommand(command);
           headerStop();
         }, true);
+        return;
       }
       this.stream.emitCommand(command);
       return function () {
