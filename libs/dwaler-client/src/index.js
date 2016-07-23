@@ -7,7 +7,13 @@ class DwalerClient {
   }
 
   getState(cb = null) {
-    return this.emitCommand('state', [], cb)
+    var stopper
+    const autoStoppingCb = event => {
+      stopper()
+      cb()
+    }
+    stopper = this.emitCommand('state', [], autoStoppingCb)
+    return
   }
 
   startLive(cb = null) {
@@ -26,6 +32,10 @@ class DwalerClient {
 
   getDestinations(onDestination = null) {
     return this.emitCommand('dests', [], onDestination)
+  }
+
+  getTrips(destinationName, onTrip = null) {
+    return this.emitCommand('trip', [destinationName], onTrip)
   }
 
   getTripRows(destinationName, tripNum, onTripRow = null) {

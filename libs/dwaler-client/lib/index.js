@@ -23,7 +23,13 @@ var DwalerClient = function () {
     value: function getState() {
       var cb = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
-      return this.emitCommand('state', [], cb);
+      var stopper;
+      var autoStoppingCb = function autoStoppingCb(event) {
+        stopper();
+        cb();
+      };
+      stopper = this.emitCommand('state', [], autoStoppingCb);
+      return;
     }
   }, {
     key: 'startLive',
@@ -55,6 +61,13 @@ var DwalerClient = function () {
       var onDestination = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
       return this.emitCommand('dests', [], onDestination);
+    }
+  }, {
+    key: 'getTrips',
+    value: function getTrips(destinationName) {
+      var onTrip = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+
+      return this.emitCommand('trip', [destinationName], onTrip);
     }
   }, {
     key: 'getTripRows',
