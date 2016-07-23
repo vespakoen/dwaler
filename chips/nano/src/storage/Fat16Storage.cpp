@@ -1,4 +1,4 @@
-// #define MOCK 1
+#define MOCK 1
 #include "Fat16Storage.h"
 
 Fat16Storage::Fat16Storage(uint8_t csPin) {
@@ -56,5 +56,28 @@ void Fat16Storage::getLines(const char* file, OnValue callback)
     callback("52.504811,13.431157,39.5");
     callback("52.503629,13.430138,39.5");
   }
+  if (strcmp(file, "BERLIN.TRP") == 0) {
+    callback("12534");
+    callback("53551");
+  }
+  #endif
+}
+
+uint8_t Fat16Storage::countLines(const char* file)
+{
+  #ifndef MOCK
+  Fat16 _file;
+  char c;
+  _file.open(file, O_READ);
+  uint8_t lines = 0;
+  while ((c = _file.read()) > 0) {
+    if (c == '\n') {
+      // call callback with line lineBuffer
+      lines++;
+    }
+  }
+  _file.close();
+  #else
+  return 2;
   #endif
 }

@@ -12,6 +12,7 @@ class Fat16Storage {
     void setup();
     void append(const char* file, const char* line);
     void getLines(const char* file, OnValue callback);
+    uint8_t countLines(const char* file);
   private:
     uint8_t _csPin;
     SdCard _sd;

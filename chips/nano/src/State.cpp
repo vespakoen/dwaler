@@ -18,5 +18,6 @@ String State::regularToString()
     (fix ? "1" : "0") + "," +
     String(fixquality) + "," +
     String(topSpeed, 2) + "," +
-    String(travelledDistance, 2);
+    String(travelledDistance, 2) + "," +
+    String(tripNum);
 }

@@ -7,6 +7,8 @@
 typedef struct State {
     Location startingLocation;
     Location destinationLocation;
+    String destinationName;
+    uint8_t tripNum;
     Location currentLocation;
     char timestamp[32];
     uint16_t course;
