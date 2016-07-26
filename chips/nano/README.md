@@ -22,13 +22,13 @@ In the following examples, the < and > characters are used to show the direction
 
 In this example, the command id is 1, and the command is `destsh`
 
-```csv
+```
 > 1,destsh
 < 1,name,lat,lng
 ```
 ### Get the destinations
 
-```csv
+```
 > 2,dests
 < 2,BERLIN,52.52437,13.41053,2
 < 2,ASIA,43.01321,163.47769,2
@@ -36,7 +36,7 @@ In this example, the command id is 1, and the command is `destsh`
 
 ### Get trips header
 
-```csv
+```
 > 3,tripsh
 < 3,ts
 ```
@@ -45,7 +45,7 @@ In this example, the command id is 1, and the command is `destsh`
 
 Notice we are sending the destination name as the "first argument"
 
-```csv
+```
 > 4,trips,BERLIN
 < 4,12534
 < 4,53551
@@ -53,7 +53,7 @@ Notice we are sending the destination name as the "first argument"
 
 ### Get trip header
 
-```csv
+```
 > 5,triph
 < 5,ts,lat,lng,alt
 ```
@@ -62,7 +62,7 @@ Notice we are sending the destination name as the "first argument"
 
 Notice we are sending the trip number as the "second argument"
 
-```csv
+```
 > 6,trip,BERLIN,1
 < 6,52.504811,13.431157,39.5
 < 6,52.503629,13.430138,39.5
@@ -70,7 +70,7 @@ Notice we are sending the trip number as the "second argument"
 
 ### Get the live updates header
 
-```csv
+```
 > 7,liveh
 < 7,ts,lat,lng,alt
 ```
@@ -79,7 +79,7 @@ Notice we are sending the trip number as the "second argument"
 
 Notice that this command keeps producing output, and can be stopped with the next command
 
-```csv
+```
 > 8,live
 < 8,,1000.000000,1000.000000,0.00
 < 8,,1000.000000,1000.000000,0.00
@@ -88,13 +88,13 @@ Notice that this command keeps producing output, and can be stopped with the nex
 
 ### Stop live updates
 
-```csv
+```
 > 9,liveoff
 ```
 
 ### Get the regular updates header
 
-```csv
+```
 > 10,regularh
 < 10,slat,slng,dlat,dlng,sats,fix,fix,top,distance,trip
 ```
@@ -103,7 +103,7 @@ Notice that this command keeps producing output, and can be stopped with the nex
 
 Notice that this command keeps producing output, and can be stopped with the next command
 
-```csv
+```
 > 11,regular
 < 11,50.799706,5.730079,52.504971,13.428731,0,0,0,0.00,0.00,1
 < 11,50.799706,5.730079,52.504971,13.428731,0,0,0,0.00,0.00,1
@@ -112,8 +112,14 @@ Notice that this command keeps producing output, and can be stopped with the nex
 
 ### Stop regular updates
 
-```csv
+```
 > 12,regularoff
+```
+
+### Change the destination
+
+```
+> 13,chdest,ASIA
 ```
 
 ## Hardware
