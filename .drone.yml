@@ -24,7 +24,7 @@ pipeline:
       NPM_CONFIG_LOGLEVEL: "warn"
       NPM_CONFIG_COLOR: "always"
     commands:
-      - cat app-desktop_changed || exit 0
+      # - cat app-desktop_changed || exit 0
       - cd apps/desktop
       - npm install
       - npm test
@@ -54,7 +54,7 @@ pipeline:
       NPM_CONFIG_LOGLEVEL: "warn"
       NPM_CONFIG_COLOR: "always"
     commands:
-      - cat app-mobile_changed || exit 0
+      # - cat app-mobile_changed || exit 0
       - cd apps/mobile
       - npm install
       - npm test
@@ -84,7 +84,7 @@ pipeline:
       NPM_CONFIG_LOGLEVEL: "warn"
       NPM_CONFIG_COLOR: "always"
     commands:
-      - cat lib-dwaler-client_changed || exit 0
+      # - cat lib-dwaler-client_changed || exit 0
       - cd libs/dwaler-client
       - npm install
       - npm test
@@ -103,6 +103,7 @@ pipeline:
   build-chip-nano:
     image: ubuntu:xenial
     commands:
+      - apt-get update -y && apt-get install curl python
       - python -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"
       - platformio --help
 
