@@ -1,0 +1,112 @@
+pipeline:
+  check-diffs:
+    image: bravissimolabs/alpine-git
+    commands:
+      - cd /drone/src/github.com/vespakoen/ontheweb
+      - git diff --name-only ${DRONE_PREV_COMMIT_SHA}..@
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- libs/dwaler-client/ || echo "true" > lib-dwaler-client_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- apps/desktop/ || echo "true" > app-desktop_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- apps/mobile/ || echo "true" > app-mobile_changed
+      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- chips/nano/ || echo "true" > chip-nano_changed
+# DESKTOP APP
+  # LOAD CACHE
+  load-app-desktop-cache:
+    image: plugins/sftp-cache:latest
+    mount:
+      - apps/desktop/node_modules
+    restore: true
+    when:
+      event: [ pull_request, push ]
+  # BUILD
+  build-app-desktop:
+    image: node:6
+    environment:
+      NPM_CONFIG_LOGLEVEL: "warn"
+      NPM_CONFIG_COLOR: "always"
+    commands:
+      - cat app-desktop_changed || exit 0
+      - cd apps/desktop
+      - npm install --production
+      - npm test
+      - npm run build
+  # SAVE CACHE
+  save-app-desktop-cache:
+    image: plugins/sftp-cache:latest
+    mount:
+      - apps/desktop/node_modules
+    rebuild: true
+    when:
+      event: [ push ]
+
+# MOBILE APP
+  # LOAD CACHE
+  load-app-mobile-cache:
+    image: plugins/sftp-cache:latest
+    mount:
+      - apps/mobile/node_modules
+    restore: true
+    when:
+      event: [ pull_request, push ]
+  # BUILD
+  build-app-mobile:
+    image: node:6
+    environment:
+      NPM_CONFIG_LOGLEVEL: "warn"
+      NPM_CONFIG_COLOR: "always"
+    commands:
+      - cat app-mobile_changed || exit 0
+      - cd apps/mobile
+      - npm install --production
+      - npm test
+      - npm run build
+  # SAVE CACHE
+  save-app-mobile-cache:
+    image: plugins/sftp-cache:latest
+    mount:
+      - apps/mobile/node_modules
+    rebuild: true
+    when:
+      event: [ push ]
+
+# JS CLIENT LIB
+  # LOAD CACHE
+  load-lib-dwaler-client-cache:
+    image: plugins/sftp-cache:latest
+    mount:
+      - libs/dwaler-client/node_modules
+    restore: true
+    when:
+      event: [ pull_request, push ]
+  # BUILD
+  build-lib-dwaler-client:
+    image: node:6
+    environment:
+      NPM_CONFIG_LOGLEVEL: "warn"
+      NPM_CONFIG_COLOR: "always"
+    commands:
+      - cat lib-dwaler-client_changed || exit 0
+      - cd libs/dwaler-client
+      - npm install --production
+      - npm test
+      - npm run build
+  # SAVE CACHE
+  save-lib-dwaler-client-cache:
+    image: plugins/sftp-cache:latest
+    mount:
+      - libs/dwaler-client/node_modules
+    rebuild: true
+    when:
+      event: [ push ]
+
+# NANO CHIP
+  # BUILD
+  build-chip-nano:
+    image: ubuntu:xenial64
+    commands:
+      - python -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"
+      - platformio --help
+
+# SLACK NOTIFICATIONS
+  notify:
+    image: plugins/slack:latest
+    channel: general
