@@ -77,6 +77,7 @@ uint8_t Fat16Storage::countLines(const char* file)
     }
   }
   _file.close();
+  return lines;
   #else
   return 2;
   #endif
