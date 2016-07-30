@@ -1,4 +1,4 @@
-#define MOCK 1
+// #define MOCK 1
 #include "Fat16Storage.h"
 
 Fat16Storage::Fat16Storage(uint8_t csPin) {

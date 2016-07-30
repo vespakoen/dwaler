@@ -48,11 +48,18 @@ void onChdest(const char* line)
 String destinationCommandId = "";
 void onDestination(const char* line)
 {
+  Serial.println(String(line));
   String lineStr = String(line);
   uint8_t seperatorIndex = lineStr.indexOf(',');
+  Serial.println("SI: " + String(seperatorIndex));
   String destinationName = lineStr.substring(0, seperatorIndex);
+  Serial.println("D: " + destinationName);
   String tripFile = destinationName + ".TRP";
+  Serial.println("TF: " + tripFile);
   uint8_t tripCount = storage.countLines(tripFile.c_str());
+  Serial.println("CI: " + destinationCommandId);
+  Serial.println("LS: " + String(line));
+  Serial.println("TC: " + String(tripCount));
   Serial.println(destinationCommandId + "," + String(line) + "," + String(tripCount));
 }
 
