@@ -26,13 +26,11 @@ pipeline:
     commands:
       # - cat app-desktop_changed || exit 0
       - dpkg --add-architecture i386
+      - wget https://dl.winehq.org/wine-builds/Release.key
+      - apt-key add Release.key
+      - echo "deb https://dl.winehq.org/wine-builds/debian/ jessie main" >> /etc/apt/sources.list
       - apt-get update -y
-      - apt-get install -y software-properties-common
-      - add-apt-repository -y ppa:ubuntu-wine/ppa
-      - apt-get update -y
-      - apt-get install -y wine1.7 winetricks xvfb
-      - apt-get purge -y software-properties-common
-      - apt-get autoclean -y
+      - apt-get install -y wine1.8 winetricks xvfb
       - cd apps/desktop
       - npm install
       - npm test
