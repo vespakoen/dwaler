@@ -21,7 +21,7 @@
     "browserify": "^13.0.0",
     "electron-debug": "^0.5.2",
     "electron-dl": "^0.2.0",
-    "electron-packager": "^6.0.0",
+    "electron-packager": "^7.3.0",
     "electron-prebuilt": "^0.37.2",
     "electron-rebuild": "^1.1.5",
     "react": "^0.14.8",
