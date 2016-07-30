@@ -28,6 +28,8 @@ pipeline:
       - dpkg --add-architecture i386
       - wget https://dl.winehq.org/wine-builds/Release.key
       - apt-key add Release.key
+      - apt-get update -y
+      - apt-get install apt-transport-https
       - bash -c "echo 'deb https://dl.winehq.org/wine-builds/debian/ jessie main' >> /etc/apt/sources.list"
       - apt-get update -y
       - apt-get install -y wine1.8 winetricks xvfb
