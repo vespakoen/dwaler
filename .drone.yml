@@ -29,6 +29,7 @@ pipeline:
       - npm install
       - npm test
       - npm run build
+      - npm run release
   # SAVE CACHE
   save-app-desktop-cache:
     image: plugins/sftp-cache:latest
@@ -58,7 +59,17 @@ pipeline:
       - cd apps/mobile
       - npm install
       - npm test
-      - npm run build
+      - npm start &
+      - curl "http://localhost:8081/index.android.bundle?platform=android" -o "android/app/src/main/assets/index.android.bundle"
+  # COMPILE
+  compile-app-mobile-android:
+    image: beevelop/android:latest
+    commands:
+      - cd apps/mobile/android
+      - ./gradlew assembleRelease
+      - keytool -genkey -v -keystore my-keystore.keystore -alias name_alias -keyalg RSA -validity 10000
+      # - jarsigner -verbose -keystore my-keystore.keystore <path of apk>  alias_name
+      # - zipalign -f -v 4 <your.apk >  <your_aligned.apk>
   # SAVE CACHE
   save-app-mobile-cache:
     image: plugins/sftp-cache:latest
