@@ -116,7 +116,7 @@ pipeline:
     image: beevelop/android:latest
     commands:
       - cd apps/mobile/android
-      - android update sdk --no-ui --all --filter build-tools-23.0.1
+      - android update sdk --no-ui --all --accept-license --filter build-tools-23.0.1
       - ./gradlew assembleRelease
       - keytool -genkey -v -keystore my-keystore.keystore -alias name_alias -keyalg RSA -validity 10000
       # - jarsigner -verbose -keystore my-keystore.keystore <path of apk>  alias_name
