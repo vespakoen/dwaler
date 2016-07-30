@@ -11,6 +11,7 @@ class App extends Component {
       live: null,
       regular: null,
       destinations: [],
+      tripRows: {},
       trips: {}
     }
   }
@@ -23,24 +24,26 @@ class App extends Component {
           destinations.push(destination)
           this.setState({ destinations })
           dwaler.getTrips(destination.name, trip => {
-            const trips = this.state.trips
-            if (!trips[destination.name]) trips[destination.name] = []
-            trips[destination.name].push(trip)
-            this.setState({ trips })
+            const tripRows = this.state.tripRows
+            if (!tripRows[destination.name]) tripRows[destination.name] = []
+            tripRows[destination.name].push(trip)
+            this.setState({ tripRows })
           })
         })
         const destinationName = 'BERLIN'
 
-        // const tripNum = '1'
-        // dwaler.getTripRows(destinationName, tripNum, tripRow => {
-        //   const { trips } = this.state
-        //   if (!trips[destinationName]) trips[destinationName] = {}
-        //   if (!trips[destinationName][tripNum]) trips[destinationName][tripNum] = []
-        //   trips[destinationName][tripNum].push(tripRow)
-        //   this.setState({ trips })
-        // })
-        // this.stopLive = dwaler.startLive(live => this.setState({ live }))
-        // this.stopRegular = dwaler.startRegular(regular => this.setState({ regular }))
+        const tripNum = '1'
+        dwaler.getTripRows(destinationName, tripNum, tripRow => {
+          const { trips } = this.state
+          console.log('DEST', destinationName)
+          console.log('TRIPNUM', tripNum)
+          if (!trips[destinationName]) trips[destinationName] = {}
+          if (!trips[destinationName][tripNum]) trips[destinationName][tripNum] = []
+          trips[destinationName][tripNum].push(tripRow)
+          this.setState({ trips })
+        })
+        this.stopLive = dwaler.startLive(live => this.setState({ live }))
+        this.stopRegular = dwaler.startRegular(regular => this.setState({ regular }))
       })
   }
 
