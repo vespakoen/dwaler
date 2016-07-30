@@ -5,47 +5,86 @@ pipeline:
       - cd /drone/src/github.com/vespakoen/dwaler
       - git diff --name-only ${DRONE_PREV_COMMIT_SHA}..@
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- libs/dwaler-client/ || echo "true" > lib-dwaler-client_changed
-      - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- apps/desktop/ || echo "true" > app-desktop_changed
+      # - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- apps/desktop/ || echo "true" > app-desktop_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- apps/mobile/ || echo "true" > app-mobile_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- chips/nano/ || echo "true" > chip-nano_changed
-# DESKTOP APP
+# # DESKTOP APP
+#   # LOAD CACHE
+#   load-app-desktop-cache:
+#     image: plugins/sftp-cache:latest
+#     mount:
+#       - apps/desktop/node_modules
+#     restore: true
+#     when:
+#       event: [ pull_request, push ]
+#   # BUILD
+#   build-app-desktop:
+#     image: node:6
+#     environment:
+#       NPM_CONFIG_LOGLEVEL: "warn"
+#       NPM_CONFIG_COLOR: "always"
+#     commands:
+#       # - cat app-desktop_changed || exit 0
+#       - dpkg --add-architecture i386
+#       - wget https://dl.winehq.org/wine-builds/Release.key
+#       - apt-key add Release.key
+#       - apt-get update -y
+#       - apt-get install apt-transport-https
+#       - bash -c "echo 'deb https://dl.winehq.org/wine-builds/debian/ jessie main' >> /etc/apt/sources.list"
+#       - apt-get update -y
+#       - apt-get install -y wine-devel
+#       - cd apps/desktop
+#       - npm install
+#       - npm test
+#       - npm run build
+#       - npm run release
+#   # SAVE CACHE
+#   save-app-desktop-cache:
+#     image: plugins/sftp-cache:latest
+#     mount:
+#       - apps/desktop/node_modules
+#     rebuild: true
+#     when:
+#       event: [ push ]
+
+# JS CLIENT LIB
   # LOAD CACHE
-  load-app-desktop-cache:
+  load-lib-dwaler-client-cache:
     image: plugins/sftp-cache:latest
     mount:
-      - apps/desktop/node_modules
+      - libs/dwaler-client/node_modules
     restore: true
     when:
       event: [ pull_request, push ]
   # BUILD
-  build-app-desktop:
+  build-lib-dwaler-client:
     image: node:6
     environment:
       NPM_CONFIG_LOGLEVEL: "warn"
       NPM_CONFIG_COLOR: "always"
     commands:
-      # - cat app-desktop_changed || exit 0
-      - dpkg --add-architecture i386
-      - wget https://dl.winehq.org/wine-builds/Release.key
-      - apt-key add Release.key
-      - apt-get update -y
-      - apt-get install apt-transport-https
-      - bash -c "echo 'deb https://dl.winehq.org/wine-builds/debian/ jessie main' >> /etc/apt/sources.list"
-      - apt-get update -y
-      - apt-get install -y wine-devel
-      - cd apps/desktop
+      # - cat lib-dwaler-client_changed || exit 0
+      - cd libs/dwaler-client
       - npm install
       - npm test
       - npm run build
-      - npm run release
   # SAVE CACHE
-  save-app-desktop-cache:
+  save-lib-dwaler-client-cache:
     image: plugins/sftp-cache:latest
     mount:
-      - apps/desktop/node_modules
+      - libs/dwaler-client/node_modules
     rebuild: true
     when:
       event: [ push ]
+
+# NANO CHIP
+  # BUILD
+  build-chip-nano:
+    image: ubuntu:xenial
+    commands:
+      - apt-get update -y && apt-get install curl python
+      - python -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"
+      - platformio --help
 
 # MOBILE APP
   # LOAD CACHE
@@ -86,45 +125,6 @@ pipeline:
     rebuild: true
     when:
       event: [ push ]
-
-# JS CLIENT LIB
-  # LOAD CACHE
-  load-lib-dwaler-client-cache:
-    image: plugins/sftp-cache:latest
-    mount:
-      - libs/dwaler-client/node_modules
-    restore: true
-    when:
-      event: [ pull_request, push ]
-  # BUILD
-  build-lib-dwaler-client:
-    image: node:6
-    environment:
-      NPM_CONFIG_LOGLEVEL: "warn"
-      NPM_CONFIG_COLOR: "always"
-    commands:
-      # - cat lib-dwaler-client_changed || exit 0
-      - cd libs/dwaler-client
-      - npm install
-      - npm test
-      - npm run build
-  # SAVE CACHE
-  save-lib-dwaler-client-cache:
-    image: plugins/sftp-cache:latest
-    mount:
-      - libs/dwaler-client/node_modules
-    rebuild: true
-    when:
-      event: [ push ]
-
-# NANO CHIP
-  # BUILD
-  build-chip-nano:
-    image: ubuntu:xenial
-    commands:
-      - apt-get update -y && apt-get install curl python
-      - python -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"
-      - platformio --help
 
 # SLACK NOTIFICATIONS
   notify:
