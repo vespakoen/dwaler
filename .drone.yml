@@ -26,7 +26,7 @@ pipeline:
     commands:
       - cat app-desktop_changed || exit 0
       - cd apps/desktop
-      - npm install --production
+      - npm install
       - npm test
       - npm run build
   # SAVE CACHE
@@ -56,7 +56,7 @@ pipeline:
     commands:
       - cat app-mobile_changed || exit 0
       - cd apps/mobile
-      - npm install --production
+      - npm install
       - npm test
       - npm run build
   # SAVE CACHE
@@ -86,7 +86,7 @@ pipeline:
     commands:
       - cat lib-dwaler-client_changed || exit 0
       - cd libs/dwaler-client
-      - npm install --production
+      - npm install
       - npm test
       - npm run build
   # SAVE CACHE
