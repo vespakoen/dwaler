@@ -25,6 +25,13 @@ pipeline:
       NPM_CONFIG_COLOR: "always"
     commands:
       # - cat app-desktop_changed || exit 0
+      - dpkg --add-architecture i386
+      - apt-get update -y
+      - apt-get install -y software-properties-common && add-apt-repository -y ppa:ubuntu-wine/ppa
+      - apt-get update -y
+      - apt-get install -y wine1.7 winetricks xvfb
+      - apt-get purge -y software-properties-common
+      - apt-get autoclean -y
       - cd apps/desktop
       - npm install
       - npm test
