@@ -27,7 +27,8 @@ pipeline:
       # - cat app-desktop_changed || exit 0
       - dpkg --add-architecture i386
       - apt-get update -y
-      - apt-get install -y software-properties-common && add-apt-repository -y ppa:ubuntu-wine/ppa
+      - apt-get install -y software-properties-common
+      - add-apt-repository -y ppa:ubuntu-wine/ppa
       - apt-get update -y
       - apt-get install -y wine1.7 winetricks xvfb
       - apt-get purge -y software-properties-common
