@@ -83,7 +83,7 @@ pipeline:
     image: ubuntu:xenial
     commands:
       - apt-get update -y
-      - apt-get install curl python
+      - apt-get install -y curl python
       - python -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"
       - platformio --help
 
