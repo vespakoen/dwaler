@@ -2,7 +2,7 @@ pipeline:
   check-diffs:
     image: bravissimolabs/alpine-git
     commands:
-      - cd /drone/src/github.com/vespakoen/ontheweb
+      - cd /drone/src/github.com/vespakoen/dwaler
       - git diff --name-only ${DRONE_PREV_COMMIT_SHA}..@
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- libs/dwaler-client/ || echo "true" > lib-dwaler-client_changed
       - git diff --exit-code --name-only ${DRONE_PREV_COMMIT_SHA}..@ -- apps/desktop/ || echo "true" > app-desktop_changed
