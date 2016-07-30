@@ -92,7 +92,7 @@ void handleCommand(String command)
   if (commandName == "regular") {
     regularCommandId = commandId;
   }
-  if (commandName == "regularh" || commandName == "stateh") {
+  if (commandName == "regularh") {
     Serial.println(commandId + ",slat,slng,dlat,dlng,sats,fix,fix,top,distance,trip");
   }
   if (commandName == "liveoff") {
@@ -100,9 +100,6 @@ void handleCommand(String command)
   }
   if (commandName == "regularoff") {
     regularCommandId = "";
-  }
-  if (commandName == "state") {
-    Serial.println(commandId + "," + state.regularToString());
   }
   if (commandName == "chdest") {
     newDest = remainder;
