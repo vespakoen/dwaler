@@ -1,5 +1,7 @@
 # dwaler
 
+[![Build Status](https://ci.koenschmeets.nl/api/badges/vespakoen/dwaler/status.svg)](https://ci.koenschmeets.nl/vespakoen/dwaler)
+
 **Wander round without being commanded**
 
 Dwaler is an navigation system for on your ((motor)cycle) and runs on a Arduino Nano.
