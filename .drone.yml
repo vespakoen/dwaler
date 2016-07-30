@@ -82,7 +82,8 @@ pipeline:
   build-chip-nano:
     image: ubuntu:xenial
     commands:
-      - apt-get update -y && apt-get install curl python
+      - apt-get update -y
+      - apt-get install curl python
       - python -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"
       - platformio --help
 
