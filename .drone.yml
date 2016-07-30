@@ -85,6 +85,7 @@ pipeline:
       - apt-get update -y
       - apt-get install -y curl python
       - python -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"
+      - cd chips/nano
       - platformio ci --project-conf platformio.ini --lib "lib/*/" src
 
 # MOBILE APP
@@ -108,7 +109,7 @@ pipeline:
       - npm install
       - npm test
       - npm start &
-      - sleep 6
+      - sleep 10
       - curl "http://localhost:8081/index.android.bundle?platform=android" -o "android/app/src/main/assets/index.android.bundle"
   # COMPILE
   compile-app-mobile-android:
