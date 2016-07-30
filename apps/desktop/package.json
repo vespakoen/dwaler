@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified, succeeding anyways\" && exit 0",
     "postinstall": "rm -rf ./node_modules/serialport/build/Release/* && ./node_modules/.bin/electron-rebuild -e ./node_modules/electron-prebuilt -f",
     "build": "browserify --debug -t babelify src/ui/index.js > ui.js",
-    "release": "electron-packager . --all --out build"
+    "release": "electron-packager . --all --out /tmp/build"
   },
   "author": "",
   "license": "ISC",
