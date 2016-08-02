@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+      
+      <testcase classname="fastlane.lanes" name="0: Verifying required fastlane version" time="0.000498">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="1: default_platform" time="0.000225">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: match" time="31.238573">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: open ../ios/Dwaler.xcodeproj" time="0.042541">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>

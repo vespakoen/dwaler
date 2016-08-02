@@ -1,0 +1,50 @@
+fastlane_version "1.91.0"
+
+default_platform :ios
+
+platform :ios do
+  before_all do
+    ENV["SLACK_URL"] = ""
+  end
+
+  desc "Syncs certs & opens XCode"
+  lane :dev do
+    match(
+      app_identifier: "com.dwaler",
+      type: "development",
+      git_url: "git@github.com:vespakoen/dwaler-certs.git",
+      git_branch: "master",
+      force_for_new_devices: true,
+      verbose: true
+    )
+    sh "open ../ios/Dwaler.xcodeproj"
+  end
+
+  desc "Submits a new Beta Build to Apple TestFlight"
+  lane :test do
+    cocoapods(
+      podfile: "Podfile"
+    )
+    match(
+      app_identifier: "com.dwaler",
+      type: "appstore",
+      git_url: "git@github.com:vespakoen/dwaler-certs.git",
+      git_branch: "master",
+      force_for_new_devices: true,
+      verbose: true
+    )
+    gym(
+      workspace: "ios/Dwaler.xcworkspace",
+      configuration: "Release",
+      scheme: "Dwaler",
+      export_method: "app-store",
+      use_legacy_build_api: false
+    )
+    pilot(
+      app_identifier: "com.dwaler",
+      distribute_external: false,
+      skip_submission: true,
+      testers_file_path: "./testers.csv"
+    )
+  end
+end
