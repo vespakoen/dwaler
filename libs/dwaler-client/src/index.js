@@ -23,13 +23,6 @@ class DwalerClient {
     }
   }
 
-  startRegular(cb = null) {
-    const stopper = this.emitCommand('regular', [], cb)
-    return () => {
-      this.emitCommand('regularoff', [], stopper, true)
-    }
-  }
-
   getDestinations(onDestination = null) {
     return this.emitCommand('dests', [], onDestination)
   }
