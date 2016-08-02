@@ -15,52 +15,35 @@ SoftwareSerial softwareSerial(3, 2);             // (RX, TX)
 GPSSensor gpsSensor(&softwareSerial, &state);
 LCDDisplay display(&lcd, &state);
 
-void setup() {
-  Serial.begin(115200);
-  storage.setup();
-  gpsSensor.setup();
-  display.setup();
-}
-
-uint32_t timer = millis();
-uint8_t divider = 1;
-bool isParsing = false;
-String liveCommandId = "";
-String regularCommandId = "";
-char parsedCommand[50];
-uint8_t parseIndex = 0;
-
-String newDest = "";
+String newDest;
 void onChdest(const char* line)
 {
   String lineStr = String(line);
-  state.destinationName = lineStr;
   uint8_t newDestLength = newDest.length();
   if (lineStr.substring(0, newDestLength) == newDest) {
-    float latitude = lineStr.substring(newDestLength + 1, newDestLength + 9).toFloat();
-    float longitude = lineStr.substring(newDestLength + 10, newDestLength + 18).toFloat();
-    state.destinationLocation.latitude = latitude;
-    state.destinationLocation.longitude = longitude;
-    state.tripNum = state.tripNum + 1;
+    String latLng = lineStr.substring(newDestLength + 1);
+    Serial.println(latLng);
+    uint8_t seperatorIndex = latLng.indexOf(',');
+    Serial.println(String(seperatorIndex));
+    String destinationLatitudeStr = latLng.substring(seperatorIndex + 1);
+    Serial.println(destinationLatitudeStr);
+    // Serial.println(latLng);
+    // String destinationLongitudeStr = latLng.substring(11, 12 + 8);
+    // Serial.println(destinationLongitudeStr);
+    // state.destinationLocation.latitude = latLng.substring(0, seperatorIndex).toFloat();
+    // state.destinationLocation.longitude = latLng.substring(seperatorIndex + 1).toFloat();
+    // state.destinationName = newDest;
+    // state.tripNum = storage.countLines(newDest.c_str()) + 1;
+    // String tripFile = newDest + ".TRP";
+    // String appendStr = String(state.timestamp) + "\n";
+    // storage.append(tripFile.c_str(), appendStr.c_str());
   }
 }
 
 String destinationCommandId = "";
 void onDestination(const char* line)
 {
-  Serial.println(String(line));
-  String lineStr = String(line);
-  uint8_t seperatorIndex = lineStr.indexOf(',');
-  Serial.println("SI: " + String(seperatorIndex));
-  String destinationName = lineStr.substring(0, seperatorIndex);
-  Serial.println("D: " + destinationName);
-  String tripFile = destinationName + ".TRP";
-  Serial.println("TF: " + tripFile);
-  uint8_t tripCount = storage.countLines(tripFile.c_str());
-  Serial.println("CI: " + destinationCommandId);
-  Serial.println("LS: " + String(line));
-  Serial.println("TC: " + String(tripCount));
-  Serial.println(destinationCommandId + "," + String(line) + "," + String(tripCount));
+  Serial.println(destinationCommandId + "," + String(line));
 }
 
 String tripCommandId = "";
@@ -75,6 +58,7 @@ void onTripRow(const char* line)
   Serial.println(tripRowCommandId + "," + String(line));
 }
 
+String liveCommandId = "";
 void handleCommand(String command)
 {
   uint8_t seperatorIndex = command.indexOf(',');
@@ -89,21 +73,20 @@ void handleCommand(String command)
   if (commandName == "liveh" || commandName == "triph") {
     Serial.println(commandId + ",ts,lat,lng,alt");
   }
-  if (commandName == "regular") {
-    regularCommandId = commandId;
+  if (commandName == "state") {
+    Serial.println(commandId + "," + state.toString());
   }
-  if (commandName == "regularh") {
-    Serial.println(commandId + ",slat,slng,dlat,dlng,sats,fix,fix,top,distance,trip");
+  if (commandName == "stateh") {
+    Serial.println(commandId + ",slat,slng,dlat,dlng,dest,sats,fix,fixq,top,dist,trip");
   }
   if (commandName == "liveoff") {
     liveCommandId = "";
   }
-  if (commandName == "regularoff") {
-    regularCommandId = "";
-  }
   if (commandName == "chdest") {
-    newDest = remainder;
-    storage.getLines("DESTS", onChdest);
+    if (state.destinationName != newDest) {
+      newDest = remainder;
+      storage.getLines("DESTS", onChdest);
+    }
   }
   if (commandName == "dests") {
     destinationCommandId = commandId;
@@ -128,9 +111,24 @@ void handleCommand(String command)
   }
 }
 
+void onState(const char* line) {
+  newDest = String(line);
+  storage.getLines("DESTS", onChdest);
+}
+
+void setup() {
+  Serial.begin(115200);
+  storage.setup();
+  gpsSensor.setup();
+  display.setup();
+  storage.getLines("STATE", onState);
+}
+
+uint32_t timer = millis();
+uint8_t parseIndex = 0;
+char parsedCommand[50];
 void loop() {
   bool shouldUpdate = false;
-
   while (Serial.available()) {
     char c = Serial.read();
     if (c != '\n' && c != '\r') {
@@ -144,18 +142,7 @@ void loop() {
       parseIndex = 0;
     }
   }
-
   if (millis() - timer > 500) {
-    if (divider % 4 == 0 || divider % 8 == 0 || divider % 12 == 0 || divider % 16 == 0) {
-      if (regularCommandId != "") {
-        Serial.println(regularCommandId + "," + state.regularToString());
-      }
-    }
-    if (divider % 16 == 0) {
-      divider = 1;
-    } else {
-      divider++;
-    }
     if (liveCommandId != "") {
       Serial.println(liveCommandId + "," + state.liveToString());
     }

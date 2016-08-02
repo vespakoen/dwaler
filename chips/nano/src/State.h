@@ -20,7 +20,7 @@ typedef struct State {
     float avgSpeed;
     float travelledDistance;
     String liveToString();
-    String regularToString();
+    String toString();
 } State;
 
 #endif

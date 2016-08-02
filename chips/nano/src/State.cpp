@@ -8,12 +8,13 @@ String State::liveToString()
     String(currentLocation.altitude, 2);
 }
 
-String State::regularToString()
+String State::toString()
 {
   return String(startingLocation.latitude, 6) + "," +
     String(startingLocation.longitude, 6) + "," +
     String(destinationLocation.latitude, 6) + "," +
     String(destinationLocation.longitude, 6) + "," +
+    destinationName + "," +
     String(satellites) + "," +
     (fix ? "1" : "0") + "," +
     String(fixquality) + "," +
