@@ -13,7 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.mapbox.reactnativemapboxgl.ReactNativeMapboxGLPackage;
-import com.rusel.RCTBluetoothSerial.RCTBluetoothSerialPackage;
+// import com.rusel.RCTBluetoothSerial.RCTBluetoothSerialPackage;
+import nl.koenschmeets.RCTUsbSerial.RCTUsbSerialPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -28,7 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
           new ReactNativeMapboxGLPackage(),
-          new RCTBluetoothSerialPackage()
+          // new RCTBluetoothSerialPackage(),
+          new RCTUsbSerialPackage()
       );
     }
   };

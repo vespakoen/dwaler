@@ -39,8 +39,3 @@ buck-out/
 \.buckd/
 android/app/libs
 android/keystores/debug.keystore
-ios/www/map
-ios/www/track1
-ios/www/camps
-ios/www/berlino
-data
