@@ -74,57 +74,51 @@ Notice we are sending the trip number as the "second argument"
 > 7,liveh
 < 7,ts,lat,lng,alt
 ```
+### Get the state
+
+
+### Get the state header
+
+```
+> 8,stateh
+< 8,slat,slng,dlat,dlng,sats,fix,fix,top,distance,trip
+```
+
+### Get the state
+
+```
+> 9,state
+< 9,50.799706,5.730079,52.504971,13.428731,0,0,0,0.00,0.00,1
+< 9,50.799706,5.730079,52.504971,13.428731,0,0,0,0.00,0.00,1
+< 9,50.799706,5.730079,52.504971,13.428731,0,0,0,0.00,0.00,1
+```
 
 ### Start live updates
 
 Notice that this command keeps producing output, and can be stopped with the next command
 
 ```
-> 8,live
-< 8,,1000.000000,1000.000000,0.00
-< 8,,1000.000000,1000.000000,0.00
-< 8,,1000.000000,1000.000000,0.00
+> 10,live
+< 10,,1000.000000,1000.000000,0.00
+< 10,,1000.000000,1000.000000,0.00
+< 10,,1000.000000,1000.000000,0.00
 ```
 
 ### Stop live updates
 
 ```
-> 9,liveoff
-```
-
-### Get the regular updates header
-
-```
-> 10,regularh
-< 10,slat,slng,dlat,dlng,sats,fix,fix,top,distance,trip
-```
-
-### Start regular updates
-
-Notice that this command keeps producing output, and can be stopped with the next command
-
-```
-> 11,regular
-< 11,50.799706,5.730079,52.504971,13.428731,0,0,0,0.00,0.00,1
-< 11,50.799706,5.730079,52.504971,13.428731,0,0,0,0.00,0.00,1
-< 11,50.799706,5.730079,52.504971,13.428731,0,0,0,0.00,0.00,1
-```
-
-### Stop regular updates
-
-```
-> 12,regularoff
+> 11,liveoff
 ```
 
 ### Change the destination
 
 ```
-> 13,chdest,ASIA
+> 12,chdest,ASIA
 ```
 
 ## Hardware
 
-- SD card reader for logging coordinates
+- SD card reader for storing destinations, trips, and the state
 - Fat16 formatted SD card (8MB up to 2GB)
 - GPS module
 - 16x2 LCD display

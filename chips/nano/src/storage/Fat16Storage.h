@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include <Fat16.h>
 
-typedef void (*OnValue)(const char* line);
+typedef void (*OnValue)(char* line);
 
 class Fat16Storage {
   public:
@@ -12,7 +12,7 @@ class Fat16Storage {
     void setup();
     void append(const char* file, const char* line);
     void getLines(const char* file, OnValue callback);
-    uint8_t countLines(const char* file);
+    uint16_t countLines(const char* file);
   private:
     uint8_t _csPin;
     SdCard _sd;

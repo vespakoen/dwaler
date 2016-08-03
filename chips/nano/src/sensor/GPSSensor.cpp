@@ -46,7 +46,7 @@ void GPSSensor::loop(bool shouldUpdate)
       int year;
       byte month, day, hour, minute, second, hundredths;
       nmeaParser.crack_datetime(&year, &month, &day, &hour, &minute, &second, &hundredths, &age);
-      sprintf(_state->timestamp, "%02d-%02d-%02d %02d:%02d:%02d", day, month, year, hour, minute, second);
+      sprintf(_state->timestamp, "%02d%02d%02d%02d%02d%02d", year, month, day, hour, minute, second);
     }
   }
 }

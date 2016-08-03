@@ -4,9 +4,11 @@
 #include "State.h"
 #include "Location.h"
 
-Location startingLocation = {50.7997071, 5.7300786};
-Location destinationLocation = {52.50497, 13.4287313};
-State state = {startingLocation, destinationLocation, "BERLIN", 1};
+// Location startingLocation = {52.50497, 13.4287313};
+// Location destinationLocation = {39.9961663, -7.144483};
+Location startingLocation = {0.0, 0.0};
+Location destinationLocation = {0.0, 0.0};
+State state = {"", "1", startingLocation, destinationLocation};
 
 Fat16Storage storage(4);                         // (CS)
 TinyLCD lcd(19, 14, 18, 17, 16, 15);             // (RS, ENABLE, D4, D5, D6, D7);
@@ -15,47 +17,59 @@ SoftwareSerial softwareSerial(3, 2);             // (RX, TX)
 GPSSensor gpsSensor(&softwareSerial, &state);
 LCDDisplay display(&lcd, &state);
 
-String newDest;
-void onChdest(const char* line)
+void onChangeDestination(char* line)
 {
   String lineStr = String(line);
-  uint8_t newDestLength = newDest.length();
-  if (lineStr.substring(0, newDestLength) == newDest) {
-    String latLng = lineStr.substring(newDestLength + 1);
-    Serial.println(latLng);
+  uint8_t seperatorIndex = lineStr.indexOf(',');
+  String destinationId = lineStr.substring(0, seperatorIndex);
+  if (destinationId == String(state.destinationId)) {
+    String latLng = lineStr.substring(destinationId.length() + 1);
+    latLng.trim(); // mehhh
     uint8_t seperatorIndex = latLng.indexOf(',');
-    Serial.println(String(seperatorIndex));
-    String destinationLatitudeStr = latLng.substring(seperatorIndex + 1);
-    Serial.println(destinationLatitudeStr);
-    // Serial.println(latLng);
-    // String destinationLongitudeStr = latLng.substring(11, 12 + 8);
-    // Serial.println(destinationLongitudeStr);
-    // state.destinationLocation.latitude = latLng.substring(0, seperatorIndex).toFloat();
-    // state.destinationLocation.longitude = latLng.substring(seperatorIndex + 1).toFloat();
-    // state.destinationName = newDest;
-    // state.tripNum = storage.countLines(newDest.c_str()) + 1;
-    // String tripFile = newDest + ".TRP";
-    // String appendStr = String(state.timestamp) + "\n";
-    // storage.append(tripFile.c_str(), appendStr.c_str());
+    String destinationLatitudeStr = latLng.substring(0, seperatorIndex);
+    String destinationLongitudeStr = latLng.substring(seperatorIndex + 1);
+    state.destinationLocation.latitude = destinationLatitudeStr.toFloat();
+    state.destinationLocation.longitude = destinationLongitudeStr.toFloat();
   }
 }
 
 String destinationCommandId = "";
-void onDestination(const char* line)
+void onDestination(char* line)
 {
   Serial.println(destinationCommandId + "," + String(line));
 }
 
 String tripCommandId = "";
-void onTrip(const char* line)
+void onTrip(char* line)
 {
   Serial.println(tripCommandId + "," + String(line));
 }
 
 String tripRowCommandId = "";
-void onTripRow(const char* line)
+void onTripRow(char* line)
 {
   Serial.println(tripRowCommandId + "," + String(line));
+}
+
+void changeDestination()
+{
+  // set new destination location
+  storage.getLines("DESTS", onChangeDestination);
+
+  // figure out new trip id
+  // char tripFileBuff[11];
+  // strcpy(tripFileBuff, state.destinationId);
+  // strcat(tripFileBuff, ".TRP");
+  // uint16_t lines = storage.countLines(tripFileBuff);
+  // char tripIdBuff[4];
+  // sprintf(tripIdBuff, "%i", lines + 1);
+  // strcpy(state.tripId, tripIdBuff);
+
+  // add trip
+  // char appendBuff[20];
+  // strcpy(appendBuff, state.timestamp ? state.timestamp : state.tripId);
+  // strcat(appendBuff, "\n");
+  // storage.append(tripFileBuff, appendBuff);
 }
 
 String liveCommandId = "";
@@ -77,16 +91,14 @@ void handleCommand(String command)
     Serial.println(commandId + "," + state.toString());
   }
   if (commandName == "stateh") {
-    Serial.println(commandId + ",slat,slng,dlat,dlng,dest,sats,fix,fixq,top,dist,trip");
+    Serial.println(commandId + ",dest,trip,slat,slng,dlat,dlng,sats,fix,fixq,top,dist");
   }
   if (commandName == "liveoff") {
     liveCommandId = "";
   }
   if (commandName == "chdest") {
-    if (state.destinationName != newDest) {
-      newDest = remainder;
-      storage.getLines("DESTS", onChdest);
-    }
+    remainder.toCharArray(state.destinationId, 8);
+    changeDestination();
   }
   if (commandName == "dests") {
     destinationCommandId = commandId;
@@ -106,14 +118,13 @@ void handleCommand(String command)
   if (commandName == "trip") {
     tripRowCommandId = commandId;
     String tripRowFile = remainder;
-    tripRowFile.replace(',', '-');
+    tripRowFile.replace(',', '.');
     storage.getLines(tripRowFile.c_str(), onTripRow);
   }
 }
 
-void onState(const char* line) {
-  newDest = String(line);
-  storage.getLines("DESTS", onChdest);
+void onState(char* line) {
+  strcpy(state.destinationId, line);
 }
 
 void setup() {
@@ -122,6 +133,7 @@ void setup() {
   gpsSensor.setup();
   display.setup();
   storage.getLines("STATE", onState);
+  changeDestination();
 }
 
 uint32_t timer = millis();
@@ -147,8 +159,17 @@ void loop() {
       Serial.println(liveCommandId + "," + state.liveToString());
     }
     if (state.fix) {
-      String logFile = state.destinationName + "-" + String(state.tripNum);
-      storage.append(logFile.c_str(), state.liveToString().c_str());
+      // set startinglocation when not already set
+      if (state.startingLocation.latitude == 0 && state.startingLocation.longitude == 0) {
+        state.startingLocation.latitude = state.currentLocation.latitude;
+        state.startingLocation.longitude = state.currentLocation.longitude;
+      }
+      // log that shit
+      char logFile[12];
+      strcpy(logFile, state.destinationId);
+      strcat(logFile, ".");
+      strcat(logFile, state.tripId);
+      storage.append(logFile, state.liveToString().c_str());
     }
     shouldUpdate = true;
     timer = millis();

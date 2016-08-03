@@ -29,30 +29,21 @@ void Fat16Storage::getLines(const char* file, OnValue callback)
   #ifndef MOCK
   Fat16 _file;
   char lineBuffer[100];
-  char c;
   _file.open(file, O_READ);
-  uint8_t i = 0;
-  while ((c = _file.read()) > 0) {
-    if (c == '\n') {
-      // add eol char
-      lineBuffer[i] = '\0';
-      // call callback with line lineBuffer
-      callback(lineBuffer);
-      // reset lineBuffer and counter
-      lineBuffer[0] = '\0';
-      i = 0;
-    } else {
-      lineBuffer[i] = c;
-      i++;
-    }
+  while ((_file.fgets(lineBuffer, 100)) > 0)  {
+    callback(lineBuffer);
   }
   _file.close();
   #else
+  if (strcmp(file, "STATE") == 0) {
+    callback("ASIA");
+  }
   if (strcmp(file, "DESTS") == 0) {
     callback("BERLIN,52.52437,13.41053");
     callback("ASIA,43.01321,163.47769");
+    callback("PORTO,-13.0132,40.47769");
   }
-  if (strcmp(file, "BERLIN-1") == 0) {
+  if (strcmp(file, "BERLIN.1") == 0) {
     callback("52.504811,13.431157,39.5");
     callback("52.503629,13.430138,39.5");
   }
@@ -63,13 +54,13 @@ void Fat16Storage::getLines(const char* file, OnValue callback)
   #endif
 }
 
-uint8_t Fat16Storage::countLines(const char* file)
+uint16_t Fat16Storage::countLines(const char* file)
 {
   #ifndef MOCK
   Fat16 _file;
   char c;
   _file.open(file, O_READ);
-  uint8_t lines = 0;
+  uint16_t lines = 0;
   while ((c = _file.read()) > 0) {
     if (c == '\n') {
       // call callback with line lineBuffer
