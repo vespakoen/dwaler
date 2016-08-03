@@ -3,6 +3,8 @@
 import React, { Component } from 'react';
 import Mapbox, { MapView } from 'react-native-mapbox-gl';
 import http from 'react-native-httpserver';
+import ActionButton from 'react-native-action-button';
+
 // import btserial from 'react-native-bluetooth-serial'
 import {
   AppRegistry,
@@ -79,6 +81,11 @@ class Dwaler extends Component {
           onLongPress={this.onLongPress}
           styleURL={'asset://assets/style.json'}
         />
+        <ActionButton buttonColor="rgba(231,76,60,1)">
+          <ActionButton.Item buttonColor='#9b59b6' title="Track" onPress={() => this.setState({userTrackingMode: this.state.userTrackingMode === Mapbox.userTrackingMode.followWithHeading ? Mapbox.userTrackingMode.none : Mapbox.userTrackingMode.followWithHeading})}>
+            <Text style={styles.actionButtonIcon}>{'><'}</Text>
+          </ActionButton.Item>
+        </ActionButton>
       </View>
     );
   }
@@ -91,6 +98,11 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1
+  },
+  actionButtonIcon: {
+    fontSize: 20,
+    height: 22,
+    color: 'white'
   }
 });
 

@@ -24,7 +24,7 @@ var tilesURl = 'http://localhost:9997/' + path.basename(outputDir) + '/{z}/{x}/{
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-geojsonToTiles(process.stdin, maxZoom, pattern)
+geojsonToTiles(process.stdin, maxZoom, pattern, 'neighbours')
   .pipe(through(function (tile) {
     var parts = tile.split('/')
     var z = parts[0]
