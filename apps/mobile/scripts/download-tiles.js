@@ -3,7 +3,6 @@ var path = require('path');
 var mkdirp = require('mkdirp');
 var through = require('through');
 var request = require('request');
-var zlib = require('zlib');
 var geojsonToTiles = require('./geojson-to-tiles')
 
 // var maxZoom = Number(process.env.MAXZOOM);
@@ -18,9 +17,8 @@ var maxZoom = 14;
 var pattern = 'features.*.geometry.coordinates.*'
 var outputDir = '../ios/www/map'
 // var url = 'https://tiles.dwaler.com/data/osm2vectortiles'
-var url = 'http://osm2vectortiles-3.tileserver.com/v2'
+var url = 'http://osm2vectortiles-0.tileserver.com/v2'
 var ext = '.pbf'
-var tilesURl = 'http://localhost:9997/' + path.basename(outputDir) + '/{z}/{x}/{y}.pbf'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
@@ -47,13 +45,11 @@ geojsonToTiles(process.stdin, maxZoom, pattern, 'neighbours')
         streamSelf.resume()
         return
       }
-      zlib.gunzip(body, function (err, ungzipped) {
-        mkdirp(path.dirname(outputFile), function () {
-          fs.writeFile(outputFile, ungzipped, function () {
-            setTimeout(function () {
-              streamSelf.resume()
-            }, 20)
-          })
+      mkdirp(path.dirname(outputFile), function () {
+        fs.writeFile(outputFile, body, function () {
+          setTimeout(function () {
+            streamSelf.resume()
+          }, 20)
         })
       })
     });

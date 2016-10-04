@@ -6,17 +6,17 @@ var through = require('through')
 var mkdirp = require('mkdirp');
 var geojsonToTiles = require('./geojson-to-tiles')
 
-// var maxZoom = 14;
-// var pattern = 'features.*.geometry.coordinates.*'
-// var mbtilesPath = '../ios/www/track1.mbtiles'
-// var outputDir = '../ios/www/track1'
-// var tilesURl = 'http://localhost:9997/' + path.basename(outputDir) + '/{z}/{x}/{y}.pbf'
-
 var maxZoom = 14;
-var pattern = 'features.*.geometry.coordinates'
-var mbtilesPath = '../ios/www/camps.mbtiles'
-var outputDir = '../ios/www/camps'
+var pattern = 'features.*.geometry.coordinates.*'
+var mbtilesPath = __dirname + '/../data/map.mbtiles'
+var outputDir = __dirname + '/../ios/www/map'
 var tilesURl = 'http://localhost:9997/' + path.basename(outputDir) + '/{z}/{x}/{y}.pbf'
+
+// var maxZoom = 14;
+// var pattern = 'features.*.geometry.coordinates'
+// var mbtilesPath = '../ios/www/camps.mbtiles'
+// var outputDir = '../ios/www/camps'
+// var tilesURl = 'http://localhost:9997/' + path.basename(outputDir) + '/{z}/{x}/{y}.pbf'
 
 function fixTileJSONCenter(tileJSON) {
   if (tileJSON.bounds && !tileJSON.center) {

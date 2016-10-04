@@ -1,10 +1,12 @@
 package com.dwaler;
 
 import com.facebook.react.ReactActivity;
+import com.rnfs.RNFSPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.mapbox.reactnativemapboxgl.ReactNativeMapboxGLPackage;
 // import com.rusel.RCTBluetoothSerial.RCTBluetoothSerialPackage;
 import nl.koenschmeets.RCTUsbSerial.RCTUsbSerialPackage;
+import io.base.RCTHttpServer.RCTHttpServerPackage;
 
 public class MainActivity extends ReactActivity {
 

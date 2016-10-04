@@ -28,8 +28,11 @@
 		5D1B53DC1D4F1CEB00209CA8 /* Mapbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5D1B53DA1D4F1CEB00209CA8 /* Mapbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		5D5161E11D4FCC9200067B57 /* www in Resources */ = {isa = PBXBuildFile; fileRef = 5D5161E01D4FCC9200067B57 /* www */; };
 		5D5161F11D4FCCA300067B57 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 5D5161F01D4FCCA300067B57 /* assets */; };
+		5DF1D7B21D818A8E00C3846E /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DF1D7B11D818A8E00C3846E /* CoreBluetooth.framework */; };
+		5DF1D7DA1D818E9000C3846E /* libRNBluetoothSerial.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DF1D7D71D818E7A00C3846E /* libRNBluetoothSerial.a */; };
 		68A16DA5F34C4A46AD2EFDD8 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BD8C91E72F034FD58EF41752 /* MaterialIcons.ttf */; };
 		6BC1FA9298424BE5A21982BD /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CBFCD17EE6447B9BE479A0A /* libRNVectorIcons.a */; };
+		6BF89C6343094596BC524F99 /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C7990A8E2F5A497981F0402A /* libRNFS.a */; };
 		6C91B90E0D224D799D6EDC8C /* libRCTMapboxGL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B893876D37449FBDACFD17 /* libRCTMapboxGL.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		9C9844BC4C5048F0BAFF55A2 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E7167A32DBB4438FB5B6C4FC /* Foundation.ttf */; };
@@ -38,7 +41,6 @@
 		D185B7A0FE65405DB61301A9 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6924E17C106648CD9C2781CC /* Octicons.ttf */; };
 		D92A2EA187844D4EBBE79966 /* libRNHTTPServer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DBB23DA0E9494677B448BDF1 /* libRNHTTPServer.a */; };
 		FC548A283B024155A2666DFC /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCF66424C21C4B3FA49E1533 /* Entypo.ttf */; };
-		FC9C27EB57BF4B97A4DDAE64 /* libRCTBluetoothSerial.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 078E00DD65A246C28FA5067C /* libRCTBluetoothSerial.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,13 +107,6 @@
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
 		};
-		5D1B53C91D4F1BF100209CA8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = A1336B8090774D1B97864BCA /* RCTBluetoothSerial.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 69CA06031CC43C2900AF6479;
-			remoteInfo = RCTBluetoothSerial;
-		};
 		5D1B53D01D4F1BF100209CA8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 167A37B954BB437487556B42 /* RCTMapboxGL.xcodeproj */;
@@ -139,6 +134,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = 5DBEB1501B18CEA900B34395;
 			remoteInfo = RNVectorIcons;
+		};
+		5D8011D21D8E022400607016 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4195AED35CCC4C0EBD7F313A /* RNFS.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F12AFB9B1ADAF8F800E0535D;
+			remoteInfo = RNFS;
+		};
+		5DF1D7D61D818E7A00C3846E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DF1D7C61D818E7A00C3846E /* RNBluetoothSerial.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 46DF8E681CD72492008CD88D;
+			remoteInfo = RNBluetoothSerial;
 		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -180,7 +189,6 @@
 		00E356EE1AD99517003FC87E /* DwalerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DwalerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* DwalerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DwalerTests.m; sourceTree = "<group>"; };
-		078E00DD65A246C28FA5067C /* libRCTBluetoothSerial.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTBluetoothSerial.a; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Dwaler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dwaler.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -192,10 +200,13 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Dwaler/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		167A37B954BB437487556B42 /* RCTMapboxGL.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTMapboxGL.xcodeproj; path = "../node_modules/react-native-mapbox-gl/ios/RCTMapboxGL.xcodeproj"; sourceTree = "<group>"; };
+		4195AED35CCC4C0EBD7F313A /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		592C4439053446A88E0760AB /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		5D1B53DA1D4F1CEB00209CA8 /* Mapbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Mapbox.framework; sourceTree = "<group>"; };
 		5D5161E01D4FCC9200067B57 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
 		5D5161F01D4FCCA300067B57 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
+		5DF1D7B11D818A8E00C3846E /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		5DF1D7C61D818E7A00C3846E /* RNBluetoothSerial.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNBluetoothSerial.xcodeproj; path = "/Users/koen/Projects/vespakoen/dwaler/apps/mobile/node_modules/react-native-vector-icons/../react-native-bluetooth-serial/ios/RNBluetoothSerial.xcodeproj"; sourceTree = "<absolute>"; };
 		63B893876D37449FBDACFD17 /* libRCTMapboxGL.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTMapboxGL.a; sourceTree = "<group>"; };
 		6924E17C106648CD9C2781CC /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		72FD3A5C74FC4AB59C0F158C /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
@@ -204,9 +215,9 @@
 		8CBFCD17EE6447B9BE479A0A /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		96DE4C28C8C7470A8AB8E26B /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		9BD2E6B8490A4CA0A7DE1ECB /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
-		A1336B8090774D1B97864BCA /* RCTBluetoothSerial.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTBluetoothSerial.xcodeproj; path = "../node_modules/react-native-bluetooth-serial/ios/RCTBluetoothSerial.xcodeproj"; sourceTree = "<group>"; };
 		BCF66424C21C4B3FA49E1533 /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		BD8C91E72F034FD58EF41752 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
+		C7990A8E2F5A497981F0402A /* libRNFS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFS.a; sourceTree = "<group>"; };
 		DBB23DA0E9494677B448BDF1 /* libRNHTTPServer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNHTTPServer.a; sourceTree = "<group>"; };
 		E7167A32DBB4438FB5B6C4FC /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		F02716EA209843C099C677AB /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
@@ -226,6 +237,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5DF1D7DA1D818E9000C3846E /* libRNBluetoothSerial.a in Frameworks */,
+				5DF1D7B21D818A8E00C3846E /* CoreBluetooth.framework in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
@@ -236,11 +249,11 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
-				FC9C27EB57BF4B97A4DDAE64 /* libRCTBluetoothSerial.a in Frameworks */,
 				5D1B53DB1D4F1CEB00209CA8 /* Mapbox.framework in Frameworks */,
 				6C91B90E0D224D799D6EDC8C /* libRCTMapboxGL.a in Frameworks */,
 				D92A2EA187844D4EBBE79966 /* libRNHTTPServer.a in Frameworks */,
 				6BC1FA9298424BE5A21982BD /* libRNVectorIcons.a in Frameworks */,
+				6BF89C6343094596BC524F99 /* libRNFS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,17 +364,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		5D1B53C51D4F1BF100209CA8 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				5D1B53CA1D4F1BF100209CA8 /* libRCTBluetoothSerial.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		5D1B53DE1D4F1CF400209CA8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5DF1D7B11D818A8E00C3846E /* CoreBluetooth.framework */,
 				5D1B53DA1D4F1CEB00209CA8 /* Mapbox.framework */,
 			);
 			name = Frameworks;
@@ -379,6 +385,22 @@
 			isa = PBXGroup;
 			children = (
 				5D5162111D5176F300067B57 /* libRNVectorIcons.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5D8011C21D8E022400607016 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5D8011D31D8E022400607016 /* libRNFS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5DF1D7C71D818E7A00C3846E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5DF1D7D71D818E7A00C3846E /* libRNBluetoothSerial.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -404,10 +426,11 @@
 				832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */,
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
-				A1336B8090774D1B97864BCA /* RCTBluetoothSerial.xcodeproj */,
 				167A37B954BB437487556B42 /* RCTMapboxGL.xcodeproj */,
 				FBD0AF852E054CFF9504B95E /* RNHTTPServer.xcodeproj */,
+				5DF1D7C61D818E7A00C3846E /* RNBluetoothSerial.xcodeproj */,
 				9BD2E6B8490A4CA0A7DE1ECB /* RNVectorIcons.xcodeproj */,
+				4195AED35CCC4C0EBD7F313A /* RNFS.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -513,6 +536,9 @@
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
+					13B07F861A680F5B00A75B9A = {
+						DevelopmentTeam = G9LU7NXGKE;
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Dwaler" */;
@@ -530,10 +556,6 @@
 				{
 					ProductGroup = 00C302A81ABCB8CE00DB3ED1 /* Products */;
 					ProjectRef = 00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */;
-				},
-				{
-					ProductGroup = 5D1B53C51D4F1BF100209CA8 /* Products */;
-					ProjectRef = A1336B8090774D1B97864BCA /* RCTBluetoothSerial.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302B61ABCB90400DB3ED1 /* Products */;
@@ -574,6 +596,14 @@
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
+				},
+				{
+					ProductGroup = 5DF1D7C71D818E7A00C3846E /* Products */;
+					ProjectRef = 5DF1D7C61D818E7A00C3846E /* RNBluetoothSerial.xcodeproj */;
+				},
+				{
+					ProductGroup = 5D8011C21D8E022400607016 /* Products */;
+					ProjectRef = 4195AED35CCC4C0EBD7F313A /* RNFS.xcodeproj */;
 				},
 				{
 					ProductGroup = 5D3E63101D4F4302005CA6D6 /* Products */;
@@ -649,13 +679,6 @@
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		5D1B53CA1D4F1BF100209CA8 /* libRCTBluetoothSerial.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRCTBluetoothSerial.a;
-			remoteRef = 5D1B53C91D4F1BF100209CA8 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		5D1B53D11D4F1BF100209CA8 /* libRCTMapboxGL.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -682,6 +705,20 @@
 			fileType = archive.ar;
 			path = libRNVectorIcons.a;
 			remoteRef = 5D5162101D5176F300067B57 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		5D8011D31D8E022400607016 /* libRNFS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNFS.a;
+			remoteRef = 5D8011D21D8E022400607016 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		5DF1D7D71D818E7A00C3846E /* libRNBluetoothSerial.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNBluetoothSerial.a;
+			remoteRef = 5DF1D7D61D818E7A00C3846E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
@@ -801,9 +838,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dwaler.app/Dwaler";
@@ -820,9 +854,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -844,10 +875,10 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
-					"$(SRCROOT)/../node_modules/react-native-bluetooth-serial/ios/RCTBluetoothSerial",
 					"$(SRCROOT)/../node_modules/react-native-mapbox-gl/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-httpserver/vendor/mongoose_2.6/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
 				);
 				INFOPLIST_FILE = Dwaler/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -857,7 +888,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dwaler;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dwalerke;
 				PRODUCT_NAME = Dwaler;
 				PROVISIONING_PROFILE = "$(sigh_com.dwaler_debug)";
 			};
@@ -867,7 +898,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -876,10 +907,10 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
-					"$(SRCROOT)/../node_modules/react-native-bluetooth-serial/ios/RCTBluetoothSerial",
 					"$(SRCROOT)/../node_modules/react-native-mapbox-gl/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-httpserver/vendor/mongoose_2.6/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
 				);
 				INFOPLIST_FILE = Dwaler/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -889,9 +920,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dwaler;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dwalerke;
 				PRODUCT_NAME = Dwaler;
-				PROVISIONING_PROFILE = "$(sigh_com.dwaler_appstore)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -933,10 +964,10 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
-					"$(SRCROOT)/../node_modules/react-native-bluetooth-serial/ios/RCTBluetoothSerial",
 					"$(SRCROOT)/../node_modules/react-native-mapbox-gl/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-httpserver/vendor/mongoose_2.6/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -977,10 +1008,10 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
-					"$(SRCROOT)/../node_modules/react-native-bluetooth-serial/ios/RCTBluetoothSerial",
 					"$(SRCROOT)/../node_modules/react-native-mapbox-gl/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-httpserver/vendor/mongoose_2.6/**",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-fs/**",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;

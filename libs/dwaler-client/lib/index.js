@@ -6,7 +6,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _debug = require('./debug');
+
+var _debug2 = _interopRequireDefault(_debug);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var log = (0, _debug2.default)('DwalerClient');
 
 var DwalerClient = function () {
   function DwalerClient(stream) {
@@ -16,43 +24,31 @@ var DwalerClient = function () {
     stream.onEvent(this.onEvent.bind(this));
     this.cbs = {};
     this.headers = {};
+    this.autoDestroyCommands = ['state', 'stateh', 'liveh', 'destsh', 'tripsh', 'triph'];
   }
 
   _createClass(DwalerClient, [{
     key: 'getState',
     value: function getState() {
-      var cb = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-
-      var stopper;
-      var autoStoppingCb = function autoStoppingCb(event) {
-        stopper();
-        cb();
-      };
-      stopper = this.emitCommand('state', [], autoStoppingCb);
-      return;
-    }
-  }, {
-    key: 'startLive',
-    value: function startLive() {
       var _this = this;
 
       var cb = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
-      var stopper = this.emitCommand('live', [], cb);
+      var commandId = this.emitCommand('state', [], cb);
       return function () {
-        _this.emitCommand('liveoff', [], stopper, true);
+        delete _this.cbs[commandId];
       };
     }
   }, {
-    key: 'startRegular',
-    value: function startRegular() {
+    key: 'live',
+    value: function live() {
       var _this2 = this;
 
       var cb = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
-      var stopper = this.emitCommand('regular', [], cb);
+      var commandId = this.emitCommand('live', [], cb);
       return function () {
-        _this2.emitCommand('regularoff', [], stopper, true);
+        _this2.emitCommand('liveoff', [], null, true);
       };
     }
   }, {
@@ -60,42 +56,53 @@ var DwalerClient = function () {
     value: function getDestinations() {
       var onDestination = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
 
-      return this.emitCommand('dests', [], onDestination);
+      this.emitCommand('dests', [], onDestination);
     }
   }, {
     key: 'getTrips',
     value: function getTrips(destinationName) {
       var onTrip = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
 
-      return this.emitCommand('trips', [destinationName], onTrip);
+      this.emitCommand('trips', [destinationName], onTrip);
     }
   }, {
     key: 'getTripRows',
     value: function getTripRows(destinationName, tripNum) {
+      var _this3 = this;
+
       var onTripRow = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
 
-      return this.emitCommand('trip', [destinationName, tripNum], onTripRow);
+      var commandId = this.emitCommand('trip', [destinationName, tripNum], onTripRow);
+      return function () {
+        delete _this3.cbs[commandId];
+      };
     }
   }, {
     key: 'onEvent',
     value: function onEvent(event) {
-      var _this3 = this;
+      var _this4 = this;
 
       var dataParts = event.split(',');
-      var commandId = dataParts[0];
-      dataParts.shift();
+      var commandId = dataParts.shift();
+      if (dataParts[0] === 'CB') {
+        delete this.cbs[commandId];
+        return;
+      }
       if (this.cbs[commandId]) {
         if (this.cbs[commandId].header) {
           (function () {
             var mappedEvent = {};
-            var headerParts = _this3.cbs[commandId].header.split(',');
+            var headerParts = _this4.cbs[commandId].header.split(',');
             headerParts.forEach(function (key, i) {
               mappedEvent[key] = dataParts[i];
             });
-            _this3.cbs[commandId](mappedEvent);
+            _this4.cbs[commandId](mappedEvent);
           })();
         } else {
           this.cbs[commandId](dataParts.join(','));
+        }
+        if (this.cbs[commandId].autoCleanup) {
+          delete this.cbs[commandId];
         }
       }
     }
@@ -104,33 +111,35 @@ var DwalerClient = function () {
     value: function emitCommand(commandName) {
       var args = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
 
-      var _this4 = this;
+      var _this5 = this;
 
       var cb = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
       var skipHeader = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
 
+      // generate command id
       var commandId = Math.floor(Math.random() * 65535); // uint16_t max
-      if (this.cbs[commandId]) return this.emitCommand(commandName, args, cb); // retry if commandId is already taken
+      // retry if command id is already taken
+      if (this.cbs[commandId]) return this.emitCommand(commandName, args, cb);
+      // create command string
       var argsStr = args.length > 0 ? ',' + args.join(',') : '';
       var command = commandId + ',' + commandName + argsStr;
+      // register callback
       if (cb !== null) {
         this.cbs[commandId] = cb;
+        if (skipHeader === true) {
+          this.cbs[commandId].autoCleanup = true;
+        }
       }
+      // get header
       if (!this.headers[commandName] && !skipHeader) {
-        var headerStop;
-        headerStop = this.emitCommand(commandName + 'h', [], function (header) {
-          _this4.cbs[commandId].header = header;
-          _this4.stream.emitCommand(command);
-          headerStop();
+        var headerCommandId = this.emitCommand(commandName + 'h', [], function (header) {
+          _this5.cbs[commandId].header = header;
+          _this5.stream.emitCommand(command);
         }, true);
-        return;
+        return commandId;
       }
       this.stream.emitCommand(command);
-      return function () {
-        if (cb !== null) {
-          delete _this4.cbs[commandId];
-        }
-      };
+      return commandId;
     }
   }]);
 

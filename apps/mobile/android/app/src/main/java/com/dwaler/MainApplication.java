@@ -15,6 +15,7 @@ import java.util.List;
 import com.mapbox.reactnativemapboxgl.ReactNativeMapboxGLPackage;
 // import com.rusel.RCTBluetoothSerial.RCTBluetoothSerialPackage;
 import nl.koenschmeets.RCTUsbSerial.RCTUsbSerialPackage;
+import io.base.RCTHttpServer.RCTHttpServerPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -30,7 +31,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
           new ReactNativeMapboxGLPackage(),
           // new RCTBluetoothSerialPackage(),
-          new RCTUsbSerialPackage()
+          new RCTUsbSerialPackage(),
+          new RCTHttpServerPackage()
       );
     }
   };

@@ -1,3 +1,6 @@
+import debug from './debug'
+const log = debug('DwalerClient')
+
 class DwalerClient {
   constructor(stream) {
     this.stream = stream
@@ -7,38 +10,41 @@ class DwalerClient {
   }
 
   getState(cb = null) {
-    var stopper
-    const autoStoppingCb = event => {
-      stopper()
-      cb()
+    const commandId = this.emitCommand('state', [], cb)
+    return () => {
+      delete this.cbs[commandId]
     }
-    stopper = this.emitCommand('state', [], autoStoppingCb)
-    return
   }
 
-  startLive(cb = null) {
-    const stopper = this.emitCommand('live', [], cb)
+  live(cb = null) {
+    const commandId = this.emitCommand('live', [], cb)
     return () => {
-      this.emitCommand('liveoff', [], stopper, true)
+      this.emitCommand('liveoff', [], null, true)
     }
   }
 
   getDestinations(onDestination = null) {
-    return this.emitCommand('dests', [], onDestination)
+    this.emitCommand('dests', [], onDestination)
   }
 
   getTrips(destinationName, onTrip = null) {
-    return this.emitCommand('trips', [destinationName], onTrip)
+    this.emitCommand('trips', [destinationName], onTrip)
   }
 
   getTripRows(destinationName, tripNum, onTripRow = null) {
-    return this.emitCommand('trip', [destinationName, tripNum], onTripRow)
+    const commandId = this.emitCommand('trip', [destinationName, tripNum], onTripRow)
+    return () => {
+      delete this.cbs[commandId]
+    }
   }
 
   onEvent(event) {
     const dataParts = event.split(',')
-    const commandId = dataParts[0]
-    dataParts.shift()
+    const commandId = dataParts.shift()
+    if (dataParts[0] === 'CB') {
+      delete this.cbs[commandId]
+      return
+    }
     if (this.cbs[commandId]) {
       if (this.cbs[commandId].header) {
         const mappedEvent = {}
@@ -50,32 +56,37 @@ class DwalerClient {
       } else {
         this.cbs[commandId](dataParts.join(','))
       }
+      if (this.cbs[commandId].autoCleanup) {
+        delete this.cbs[commandId]
+      }
     }
   }
 
   emitCommand(commandName, args = [], cb = null, skipHeader = false) {
+    // generate command id
     const commandId = Math.floor(Math.random() * 65535) // uint16_t max
-    if (this.cbs[commandId]) return this.emitCommand(commandName, args, cb) // retry if commandId is already taken
+    // retry if command id is already taken
+    if (this.cbs[commandId]) return this.emitCommand(commandName, args, cb)
+    // create command string
     const argsStr = args.length > 0 ? ',' + args.join(',') : ''
     const command = `${commandId},${commandName}${argsStr}`
+    // register callback
     if (cb !== null) {
       this.cbs[commandId] = cb
-    }
-    if (!this.headers[commandName] && !skipHeader) {
-      var headerStop
-      headerStop = this.emitCommand(`${commandName}h`, [], header => {
-        this.cbs[commandId].header = header
-        this.stream.emitCommand(command)
-        headerStop()
-      }, true)
-      return
-    }
-    this.stream.emitCommand(command)
-    return () => {
-      if (cb !== null) {
-        delete this.cbs[commandId]
+      if (skipHeader === true || commandName === 'state') {
+        this.cbs[commandId].autoCleanup = true
       }
     }
+    // get header
+    if (!this.headers[commandName] && !skipHeader) {
+      const headerCommandId = this.emitCommand(`${commandName}h`, [], header => {
+        this.cbs[commandId].header = header
+        this.stream.emitCommand(command)
+      }, true)
+      return commandId
+    }
+    this.stream.emitCommand(command)
+    return commandId
   }
 }
 
