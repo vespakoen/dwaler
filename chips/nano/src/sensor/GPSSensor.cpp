@@ -10,11 +10,14 @@ GPSSensor::GPSSensor(SoftwareSerial* softwareSerial, State* state)
 
 void GPSSensor::setup()
 {
+  #ifndef MOCK
   _softwareSerial->begin(9600);
+  #endif
 }
 
 void GPSSensor::loop(bool shouldUpdate)
 {
+  #ifndef MOCK
   // parse incoming data
   if (_softwareSerial->available()) {
     nmeaParser.encode(_softwareSerial->read());
@@ -49,4 +52,19 @@ void GPSSensor::loop(bool shouldUpdate)
       sprintf(_state->timestamp, "%02d%02d%02d%02d%02d%02d", year, month, day, hour, minute, second);
     }
   }
+  #else
+  if (shouldUpdate) {
+    _state->fix = 1;
+    _state->currentLocation.latitude = _state->currentLocation.latitude ? _state->currentLocation.latitude + 0.005 : 50.85;
+    _state->currentLocation.longitude = _state->currentLocation.longitude ? _state->currentLocation.longitude + 0.005 : 5.6833;
+    _state->currentLocation.altitude = _state->currentLocation.altitude ? _state->currentLocation.altitude + 0.005 : 50;
+    _state->speed = _state->speed ? _state->speed + 1 : 30;
+    _state->course = _state->course ? _state->course + 10 : _state->currentLocation.bearingTo(_state->destinationLocation);
+    if (_state->course > 360) {
+      _state->course = 0;
+    }
+    _state->travelledDistance = _state->travelledDistance ? _state->travelledDistance + 1 : 12;
+    strncpy(_state->timestamp, "20170421223912", 15);
+  }
+  #endif
 }

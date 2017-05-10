@@ -6,6 +6,7 @@
 #include <TinyGPS.h>
 #include "../Location.h"
 #include "../State.h"
+#include "../config.h"
 
 class GPSSensor {
   public:
