@@ -33,9 +33,14 @@ void LCDDisplay::setup()
 
 void LCDDisplay::renderCompassScreen()
 {
+  #if LCD_COMPASS_DEGRESS == 180
+  uint8_t viewAngle = 180;
+  float degreesPerBlock = 11.25; // viewAngle / 16
+  #else
   uint8_t viewAngle = 90;
+  float degreesPerBlock = 5.625; // viewAngle / 16
+  #endif
   uint8_t halfViewAngle = viewAngle / 2;
-  float degreesPerBlock = viewAngle == 90 ? 5.625 : 11.25; // viewAngle / 16
   // get the diff
   int16_t _relativeBearing = _state->currentLocation.bearingTo(_state->destinationLocation) - _state->course;
   if (_relativeBearing < 0) {
@@ -50,7 +55,7 @@ void LCDDisplay::renderCompassScreen()
     _lcd->setCursor(0, 0);
     _lcd->print("<=");
   } else {
-    // destination within 180 degrees view
+    // destination within view
     if (_relativeBearing < viewAngle) {
       _lcd->setCursor(round(_relativeBearing / degreesPerBlock) + 7, 0);
       _lcd->print("<>");
@@ -70,15 +75,16 @@ void LCDDisplay::renderCompassScreen()
   // get course string
   _lcd->setCursor(0, 1);
   uint8_t _cutStart = round(_state->course / degreesPerBlock);
-  const char* courseString = viewAngle == 180 ? _courseString180 : _courseString90;
-  uint8_t compassStringLength = viewAngle == 180 ? 32 : 64;
+  #if LCD_COMPASS_DEGRESS == 180
+  const char* courseString = _courseString180;
+  uint8_t compassStringLength = 32;
+  #else
+  const char* courseString = _courseString90;
+  uint8_t compassStringLength = 64;
+  #endif
   for (uint8_t k = _cutStart; k <= _cutStart + 16; k++) {
     char character;
-    if (k > (compassStringLength - 1)) {
-      character = (char) pgm_read_byte_near(&courseString[k - compassStringLength]);
-    } else {
-      character = (char) pgm_read_byte_near(&courseString[k]);
-    }
+    character = (char) pgm_read_byte_near(&courseString[k % compassStringLength]);
     if (character == 'n') {
       _lcd->write(byte(0));
     } else if (character == 'N') {
@@ -133,13 +139,16 @@ void LCDDisplay::renderProgressScreen()
   _lcd->print(progress); _lcd->print("%");
   _lcd->setCursor(0, 1);
   uint8_t decimalPrecision = 2;
-  if (totalDistance > 999) {
+  if (totalDistance >= 1000) {
     decimalPrecision = 1;
   }
-  if (totalDistance > 9999) {
+  if (totalDistance >= 10000) {
     decimalPrecision = 0;
   }
-  _lcd->print("KM "); _lcd->print(String(distanceTravelled, decimalPrecision)); _lcd->print("/"); _lcd->print(String(totalDistance, decimalPrecision));
+  _lcd->print("KM ");
+  _lcd->print(String(distanceTravelled, decimalPrecision));
+  _lcd->print("/");
+  _lcd->print(String(totalDistance, decimalPrecision));
 }
 
 // void LCDDisplay::renderSpeedScreen()
@@ -264,8 +273,8 @@ void LCDDisplay::loop(bool shouldUpdate)
     } else {
       activeScreen++;
     }
-    if (!_state->fix) return renderWaitingScreen();
-    if (activeScreen < 3) return renderCompassScreen();
+    // if (!_state->fix) return renderWaitingScreen();
+    // /*if (activeScreen < 3) */return renderCompassScreen();
     return renderProgressScreen();
     // if (activeScreen == 2) return renderSpeedScreen();
     // if (activeScreen == 3) return renderPositionScreen();

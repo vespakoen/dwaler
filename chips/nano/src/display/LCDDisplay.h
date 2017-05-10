@@ -5,9 +5,13 @@
 #include <Arduino.h>
 #include <TinyLCD.h>
 #include "../State.h"
+#include "../config.h"
 
+#if LCD_COMPASS_DEGRESS == 180
 const char _courseString180[] PROGMEM = "W+nNwW+nN+nNeE+eE+eEsS+sS+sSwW+w";
+#else
 const char _courseString90[]  PROGMEM = "wW--+--nN--+--nNeE--+--eE--+--sSeE--+--sS--+--sSwW--+--wW--+--nN";
+#endif
 
 const uint8_t n[8] PROGMEM = {
   B11110,
