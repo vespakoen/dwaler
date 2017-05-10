@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <Fat16.h>
+#include "../config.h"
 
 typedef void (*OnValue)(char* line);
 
