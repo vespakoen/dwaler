@@ -10,7 +10,7 @@ typedef struct State {
     Location startingLocation;
     Location destinationLocation;
     Location currentLocation;
-    char timestamp[32];
+    char timestamp[15];
     uint16_t course;
     uint8_t satellites;
     bool fix;
