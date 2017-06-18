@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import Mapbox, { MapView } from 'react-native-mapbox-gl';
 import http from 'react-native-httpserver';
-import ActionButton from 'react-native-action-button';
+// import ActionButton from 'react-native-action-button';
 import hsv2rgb from './src/util/hsv2rgb'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import btserial from 'react-native-bluetooth-serial'
@@ -62,18 +62,17 @@ function closestPointIndex(line, point) {
   return shortestDistIndex
 }
 
-const accessToken = 'pk.eyJ1IjoiZ3JhZmEiLCJhIjoiY2lvZjU0NnRqMDB0cnVwbTM3MmZjeGxxZiJ9.HG76QROZVWnTf9jQ9ZKWDw';
-Mapbox.setAccessToken(accessToken);
-
 class Dwaler extends Component {
   state = {
     center: {
-      latitude: 50.5156579,
-      longitude: 5.3548103
+      latitude: 50.799067,
+      longitude: 5.731964
     },
     locationUpdateIndex: 0,
     zoom: 14,
-    styleUrl: 'asset://assets/outdoors.json',
+    styleUrl: 'http://localhost:9997/outdoors.json',
+    // styleUrl: 'http://localhost:9997/omt-outdoors.json',
+    // styleUrl: 'mapbox://styles/mapbox/outdoors-v9',
     userTrackingMode: Mapbox.userTrackingMode.none,
     annotations: [],
     currentLocation: null,
@@ -81,29 +80,44 @@ class Dwaler extends Component {
     avgSpeed: null,
     heightMap: [],
     speeds: [],
+    speed: 0,
+    progress: 0,
     lastTime: new Date(),
     isTracking: true,
     eta: new Date(),
     totalDistanceTravelled: 0
   };
 
+  // componentDidMount = () => {
+  //   setInterval(() => {
+  //     this.setState({
+  //       center: {
+  //         // ...this.state.center,
+  //         latitude: this.state.center.latitude - 0.001,
+  //         longitude: this.state.center.longitude - 0.001
+  //       }
+  //     })
+  //     this.onUpdateUserLocation(this.state.center)
+  //   }, 1000)
+  // };
+
   onPressSettings = () => {
     console.log('settings')
     this.refs.settingsModal.open();
   };
 
-  // onPressFlyToCurrentLocation = () => {
-  //   console.log('flyToCurrentLocation')
-  //   this._map.getCenterCoordinateZoomLevel(location => {
-  //     console.log('location', location)
-  //     setTimeout(() => {
-  //       this._map.easeTo({
-  //         latitude: location.latitude,
-  //         longitude: location.longitude
-  //       })
-  //     }, 100)
-  //   })
-  // };
+  onPressFlyToCurrentLocation = () => {
+    console.log('flyToCurrentLocation')
+    this._map.getCenterCoordinateZoomLevel(location => {
+      console.log('location', location)
+      setTimeout(() => {
+        this._map.easeTo({
+          latitude: location.latitude,
+          longitude: location.longitude
+        })
+      }, 100)
+    })
+  };
 
   onPressSaveLocation = () => {
     console.log('saveLocation')
@@ -162,48 +176,39 @@ class Dwaler extends Component {
         lastTime: new Date()
       }
 
-
       if (this.state.line && this.state.locationUpdateIndex % 5 === 0) {
         const lineCoords = this.state.line.geometry.coordinates
         const destination = lineCoords[lineCoords.length - 1]
-        const flightLine = getFastLine(turfPoint(currentLocation), turfPoint(destination))
+        // const flightLine = getFastLine(turfPoint(currentLocation), turfPoint(destination))
         var closestIndex = closestPointIndex(this.state.line, turfPoint(currentLocation))
-        console.log('closestIndex', closestIndex)
+        // console.log('closestIndex', closestIndex)
         const closestPoint = lineCoords[closestIndex]
-        // const getBackLine = getFastLine(turfPoint(currentLocation), turfPoint(closestPoint))
-        // update.annotations = [
-        //   {
-        //     type: 'polyline',
-        //     coordinates: flightLine.geometry.coordinates.map(coord => [coord[1], coord[0]]),
-        //     strokeColor: '#1f3a5d',
-        //     strokeWidth: 3,
-        //     alpha: 1,
-        //     id: 'flightTillEnd'
-        //   },
-        //   {
-        //     type: 'polyline',
-        //     coordinates: getBackLine.geometry.coordinates.map(coord => [coord[1], coord[0]]),
-        //     strokeColor: '#ff1111',
-        //     strokeWidth: 3,
-        //     alpha: 1,
-        //     id: 'getBackLine'
-        //   }
-        // ]
+        const getBackLine = getFastLine(turfPoint(currentLocation), turfPoint(closestPoint))
+        update.annotations = [
+          {
+            type: 'polyline',
+            coordinates: getBackLine.geometry.coordinates.map(coord => [coord[1], coord[0]]),
+            strokeColor: '#ff0000',
+            strokeWidth: 4,
+            alpha: 1,
+            id: 'getBackLine'
+          }
+        ]
 
         const lineTillEndCoords = lineCoords.slice(closestIndex)
         lineTillEndCoords.unshift(currentLocation)
         const lineTillEnd = turfLinestring(lineTillEndCoords)
         const distanceRemaining = turfLineDistance(lineTillEnd, 'kilometers')
-        console.log('distance remaining', distanceRemaining)
+        // console.log('distance remaining', distanceRemaining)
         update.distanceRemaining = distanceRemaining
         let progress = (1 - (distanceRemaining / this.state.totalDistance)) * 100
         if (progress < 0) {
           progress = 0
         }
-        console.log('progress', progress)
+        // console.log('progress', progress)
         update.progress = progress
         const hoursLeft = distanceRemaining / this.state.avgSpeed
-        console.log('hours left', hoursLeft)
+        // console.log('hours left', hoursLeft)
         update.hoursLeft = hoursLeft
         const eta = new Date()
         eta.setHours(eta.getHours() + hoursLeft)
@@ -217,7 +222,7 @@ class Dwaler extends Component {
         if (speed > 5) {
           mapUpdate.direction = turfBearing(turfPoint(lastLocation), turfPoint(currentLocation))
           if (mapUpdate.direction < 0) {
-            mapUpdate.direction = 360 - mapUpdate.direction
+            mapUpdate.direction = 360 + mapUpdate.direction
           }
         }
       }
@@ -272,9 +277,11 @@ class Dwaler extends Component {
     //     })
     //     client.getState(state => console.log('got state', state))
     //   })
-    fetch('http://localhost:9997/noarberlien.geojson')
+
+    fetch('http://localhost:9997/noarmestreech.geojson')
       .then(res => res.json())
       .then(trip => {
+        // console.log(trip)
         const line = trip.features[0]
         const totalDistance = turfLineDistance(trip.features[0], 'kilometers')
         // console.log('total distance', totalDistance)
@@ -295,7 +302,7 @@ class Dwaler extends Component {
         this.setState({ heightMap, line, totalDistance })
       })
       .catch(function(ex) {
-        console.log('parsing failed', ex)
+        console.error(ex)
       })
   }
 
@@ -309,7 +316,7 @@ class Dwaler extends Component {
   render() {
     const hottnessPercentage = 100
     const hottness = 0.3 - ((hottnessPercentage / 100) * 0.3)
-    // StatusBar.setHidden(true)
+    StatusBar.setHidden(true)
     // onChangeUserTrackingMode={this.onChangeUserTrackingMode}
     return (
       <View style={styles.container}>
@@ -394,9 +401,13 @@ class Dwaler extends Component {
             <Text style={styles.infoDescription}>%</Text>
           </View>
           <View style={[styles.infoItem, styles.lastInfoItem]}>
+            <Text style={[styles.infoTitle]}>{Math.round(this.state.totalDistance * 10) / 10}</Text>
+            <Text style={styles.infoDescription}>distance</Text>
+          </View>
+          {/* <View style={[styles.infoItem, styles.lastInfoItem]}>
             <Text style={[styles.infoTitle, {textAlign: 'left'}]}>{this.state.eta.toTimeString().substr(0, 5)}</Text>
             <Text style={styles.infoDescription}>ETA ({Math.round(this.state.hoursLeft)} hours)</Text>
-          </View>
+          </View> */}
         </View>
         {/*<ActionButton buttonColor="rgba(0,0,0,1)">
           <ActionButton.Item buttonColor='#333' title="Settings" onPress={this.onPressSettings}>
@@ -412,11 +423,8 @@ class Dwaler extends Component {
             <Icon name="navigation" size={24} color="#fff" />
           </ActionButton.Item>
         </ActionButton>*/}
-
         <SettingsScene ref="settingsModal" />
-
         <ChangeDestinationScene ref="changeDestinationModal" />
-
         <SaveLocationScene ref="saveLocationModal" />
       </View>
     );

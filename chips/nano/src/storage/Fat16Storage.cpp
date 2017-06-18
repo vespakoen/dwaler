@@ -69,6 +69,26 @@ void Fat16Storage::getLines(const char* file, OnValue callback)
   #endif
 }
 
+void Fat16Storage::getFirstLine(const char* file, OnValue callback)
+{
+  #ifndef MOCK
+  Fat16 _file;
+  char lineBuffer[100];
+  if (!_file.open(file, O_READ)) {
+    return;
+  }
+  while ((_file.fgets(lineBuffer, 100)) > 0)  {
+    callback(lineBuffer);
+    break;
+  }
+  _file.close();
+  #else
+  if (strcmp(file, "TRIP.1") == 0) {
+    callback((char *)"52.504811,13.431157,39.5");
+  }
+  #endif
+}
+
 uint16_t Fat16Storage::countLines(const char* file)
 {
   #ifndef MOCK
