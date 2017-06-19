@@ -274,7 +274,7 @@ void LCDDisplay::loop(bool shouldUpdate)
       activeScreen++;
     }
     // if (!_state->fix) return renderWaitingScreen();
-    // /*if (activeScreen < 3) */return renderCompassScreen();
+    if (activeScreen < 3) return renderCompassScreen();
     return renderProgressScreen();
     // if (activeScreen == 2) return renderSpeedScreen();
     // if (activeScreen == 3) return renderPositionScreen();

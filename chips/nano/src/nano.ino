@@ -1,14 +1,18 @@
 #include "sensor/GPSSensor.h"
 #include "display/LCDDisplay.h"
-#include "storage/Fat16Storage.h"
+// #include "storage/Fat16Storage.h"
 #include "State.h"
 #include "Location.h"
+//
+// onState("BERLIN,1");
+// onDestinationLocation("52.5243,13.4103");
+// onStartingLocation("50.8490,5.6857");
 
-Location startingLocation = {0.0, 0.0};
-Location destinationLocation = {0.0, 0.0};
+Location startingLocation = {50.8490,5.6857};
+Location destinationLocation = {52.5243, 13.4103};
 State state = {"", "1", startingLocation, destinationLocation};
 
-Fat16Storage storage(4);                         // (CS)
+// Fat16Storage storage(4);                         // (CS)
 TinyLCD lcd(19, 14, 18, 17, 16, 15);             // (RS, ENABLE, D4, D5, D6, D7);
 SoftwareSerial softwareSerial(3, 2);             // (RX, TX)
 
@@ -53,21 +57,21 @@ void changeDestination() {
   char locFileBuff[12];
   strcpy(locFileBuff, state.destinationId);
   strcat(locFileBuff, ".LOC");
-  storage.getLines(locFileBuff, onLocation);
+  // storage.getLines(locFileBuff, onLocation);
 
   // figure out new trip id
   char tripFileBuff[11];
   strcpy(tripFileBuff, state.destinationId);
   strcat(tripFileBuff, ".TRP");
-  uint16_t lines = storage.countLines(tripFileBuff);
-  char tripIdBuff[4];
-  sprintf(tripIdBuff, "%i", lines);
-  strcpy(state.tripId, tripIdBuff);
+  // uint16_t lines = storage.countLines(tripFileBuff);
+  // char tripIdBuff[4];
+  // sprintf(tripIdBuff, "%i", lines);
+  // strcpy(state.tripId, tripIdBuff);
 
   // add trip
-  char appendBuff[20];
-  strcpy(appendBuff, state.timestamp);
-  storage.append(tripFileBuff, appendBuff);
+  // char appendBuff[20];
+  // strcpy(appendBuff, state.timestamp);
+  // storage.append(tripFileBuff, appendBuff);
 }
 
 String liveCommandId = "";
@@ -94,25 +98,25 @@ void handleCommand(String command)
   }
   if (commandName == "dests") {
     destinationCommandId = commandId;
-    storage.getLines("DESTS", onDestination);
+    // storage.getLines("DESTS", onDestination);
   }
   if (commandName == "trips") {
     tripCommandId = commandId;
     String tripFile = remainder + ".TRP";
-    storage.getLines(tripFile.c_str(), onTrip);
+    // storage.getLines(tripFile.c_str(), onTrip);
   }
   if (commandName == "trip") {
     tripRowCommandId = commandId;
     String tripRowFile = remainder;
     tripRowFile.replace(',', '.');
-    storage.getLines(tripRowFile.c_str(), onTripRow);
+    // storage.getLines(tripRowFile.c_str(), onTripRow);
   }
 }
 
 void setup()
 {
   Serial.begin(115200);
-  storage.setup();
+  // storage.setup();
   gpsSensor.setup();
   display.setup();
 }
@@ -145,8 +149,8 @@ void loop()
     }
     if (state.fix) {
       if (!lastFix) {
-        storage.getLines("STATE", onState);
-        changeDestination();
+        // storage.getLines("STATE", onState);
+        // changeDestination();
       }
       // set startinglocation when not already set
       if (state.startingLocation.latitude == 0 && state.startingLocation.longitude == 0) {
@@ -159,7 +163,7 @@ void loop()
         strcpy(logFile, state.destinationId);
         strcat(logFile, ".");
         strcat(logFile, state.tripId);
-        storage.append(logFile, state.liveToString().c_str());
+        // storage.append(logFile, state.liveToString().c_str());
         lastLatitude = String(state.currentLocation.latitude, 4);
         lastLongitude = String(state.currentLocation.longitude, 4);
       }
