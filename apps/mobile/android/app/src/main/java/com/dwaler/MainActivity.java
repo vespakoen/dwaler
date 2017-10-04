@@ -1,6 +1,8 @@
 package com.dwaler;
 
 import com.facebook.react.ReactActivity;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.mapbox.reactnativemapboxgl.ReactNativeMapboxGLPackage;
 
 public class MainActivity extends ReactActivity {
 

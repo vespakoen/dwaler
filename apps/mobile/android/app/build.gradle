@@ -126,8 +126,9 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-google-places')
+    compile project(':react-native-fs')
     compile project(':react-native-vector-icons')
-    compile project(':react-native-bluetooth-serial')
     compile project(':react-native-mapbox-gl')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
