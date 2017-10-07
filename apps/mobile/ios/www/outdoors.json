@@ -90,18 +90,47 @@
   },
   "sources": {
     "composite": {
+<<<<<<< HEAD
       "url": "http://localhost:9997/map/metadata.json",
+=======
+      "url": "http://localhost:9997/www/map/metadata.json",
+>>>>>>> dev
       "type": "vector",
       "minzoom": 0,
       "maxzoom": 14
     },
     "route": {
+<<<<<<< HEAD
       "data": "http://localhost:9997/noarberlien.json",
       "type": "geojson"
     }
   },
   "sprite": "http://localhost:9997/sprite",
   "glyphs": "http://localhost:9997/fonts/{fontstack}/{range}.pbf",
+=======
+      "data": "http://localhost:9997/www/track.geojson",
+      "type": "geojson"
+    },
+    "unesco": {
+      "data": "asset://www/unesco.geojson",
+      "type": "geojson"
+    },
+    "workaway": {
+      "data": "asset://www/workaway.geojson",
+      "type": "geojson"
+    },
+    "motorcycle-shops": {
+      "data": "asset://www/motorcycle-shops.geojson",
+      "type": "geojson"
+    },
+    "extras": {
+      "data": "http://localhost:9997/www/extras.geojson",
+      "type": "geojson"
+    }
+  },
+  "sprite": "asset://www/sprite",
+  "glyphs": "asset://www/fonts/{fontstack}/{range}.pbf",
+>>>>>>> dev
   "layers": [
     {
       "id": "background",
@@ -14683,6 +14712,292 @@
           ]
         }
       }
+<<<<<<< HEAD
+=======
+    },
+    {
+      "id": "motorcycle-shops",
+      "type": "symbol",
+      "source": "motorcycle-shops",
+      "source-layer": "motorcycle-shops",
+      "minzoom": 5,
+      "layout": {
+        "text-line-height": 1.1,
+        "text-size": {
+          "base": 1,
+          "stops": [
+            [
+              16,
+              11
+            ],
+            [
+              20,
+              13
+            ]
+          ]
+        },
+        "icon-image": "bicycle-15",
+        "symbol-spacing": 250,
+        "text-font": [
+          "Open Sans Semibold"
+        ],
+        "text-offset": [
+          0,
+          0.85
+        ],
+        "text-rotation-alignment": "viewport",
+        "text-anchor": "top",
+        "text-field": {
+          "base": 1,
+          "stops": [
+            [
+              0,
+              ""
+            ],
+            [
+              5,
+              "{title}"
+            ]
+          ]
+        },
+        "text-letter-spacing": 0.01,
+        "icon-padding": 0,
+        "text-max-width": 7
+      },
+      "paint": {
+        "text-color": "#ff0000",
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 0.5,
+        "icon-halo-width": 4,
+        "icon-halo-color": "#fff",
+        "text-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              13.99,
+              0
+            ],
+            [
+              14,
+              1
+            ]
+          ]
+        },
+        "text-halo-blur": 0.5
+      }
+    },{
+      "id": "extras",
+      "type": "symbol",
+      "source": "extras",
+      "source-layer": "extras",
+      "minzoom": 5,
+      "layout": {
+        "text-line-height": 1.1,
+        "text-size": {
+          "base": 1,
+          "stops": [
+            [
+              16,
+              11
+            ],
+            [
+              20,
+              13
+            ]
+          ]
+        },
+        "icon-image": "marker-15",
+        "symbol-spacing": 250,
+        "text-font": [
+          "Open Sans Semibold"
+        ],
+        "text-offset": [
+          0,
+          0.85
+        ],
+        "text-rotation-alignment": "viewport",
+        "text-anchor": "top",
+        "text-field": {
+          "base": 1,
+          "stops": [
+            [
+              0,
+              ""
+            ],
+            [
+              5,
+              "{name}"
+            ]
+          ]
+        },
+        "text-letter-spacing": 0.01,
+        "icon-padding": 0,
+        "text-max-width": 7
+      },
+      "paint": {
+        "text-color": "#ff0000",
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 0.5,
+        "icon-halo-width": 4,
+        "icon-halo-color": "#fff",
+        "text-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              13.99,
+              0
+            ],
+            [
+              14,
+              1
+            ]
+          ]
+        },
+        "text-halo-blur": 0.5
+      }
+    },
+    {
+      "id": "unesco",
+      "type": "symbol",
+      "source": "unesco",
+      "source-layer": "unesco",
+      "minzoom": 5,
+      "layout": {
+        "text-line-height": 1.1,
+        "text-size": {
+          "base": 1,
+          "stops": [
+            [
+              16,
+              11
+            ],
+            [
+              20,
+              13
+            ]
+          ]
+        },
+        "icon-image": "castle-15",
+        "symbol-spacing": 250,
+        "text-font": [
+          "Open Sans Semibold"
+        ],
+        "text-offset": [
+          0,
+          0.85
+        ],
+        "text-rotation-alignment": "viewport",
+        "text-anchor": "top",
+        "text-field": {
+          "base": 1,
+          "stops": [
+            [
+              0,
+              ""
+            ],
+            [
+              5,
+              "{title}"
+            ]
+          ]
+        },
+        "text-letter-spacing": 0.01,
+        "icon-padding": 0,
+        "text-max-width": 7
+      },
+      "paint": {
+        "text-color": "#ff0000",
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 0.5,
+        "icon-halo-width": 4,
+        "icon-halo-color": "#fff",
+        "text-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              13.99,
+              0
+            ],
+            [
+              14,
+              1
+            ]
+          ]
+        },
+        "text-halo-blur": 0.5
+      }
+    },
+    {
+      "id": "workaway",
+      "type": "symbol",
+      "source": "workaway",
+      "source-layer": "workaway",
+      "minzoom": 5,
+      "layout": {
+        "text-line-height": 1.1,
+        "text-size": {
+          "base": 1,
+          "stops": [
+            [
+              16,
+              11
+            ],
+            [
+              20,
+              13
+            ]
+          ]
+        },
+        "icon-image": "rocket-15",
+        "symbol-spacing": 250,
+        "text-font": [
+          "Open Sans Semibold"
+        ],
+        "text-offset": [
+          0,
+          0.85
+        ],
+        "text-rotation-alignment": "viewport",
+        "text-anchor": "top",
+        "text-field": {
+          "base": 1,
+          "stops": [
+            [
+              0,
+              ""
+            ],
+            [
+              5,
+              "{name}"
+            ]
+          ]
+        },
+        "text-letter-spacing": 0.01,
+        "icon-padding": 0,
+        "text-max-width": 7
+      },
+      "paint": {
+        "text-color": "#ff0000",
+        "text-halo-color": "hsl(0, 0%, 100%)",
+        "text-halo-width": 0.5,
+        "icon-halo-width": 4,
+        "icon-halo-color": "#fff",
+        "text-opacity": {
+          "base": 1,
+          "stops": [
+            [
+              13.99,
+              0
+            ],
+            [
+              14,
+              1
+            ]
+          ]
+        },
+        "text-halo-blur": 0.5
+      }
+>>>>>>> dev
     }
   ],
   "created": 0,

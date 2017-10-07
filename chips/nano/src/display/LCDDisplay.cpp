@@ -115,6 +115,11 @@ void LCDDisplay::renderProgressScreen()
   float distanceRemaining = _state->currentLocation.distanceTo(_state->destinationLocation) / 1000;
   // get distance between start & current + current & end
   float totalDistance = distanceTravelled + distanceRemaining;
+  // get distance between start and end
+  float shortestDistance = _state->startingLocation.distanceTo(_state->destinationLocation) / 1000;
+  // the amount of times the shortestDistance fits into the total distance
+  // float ratio = totalDistance / shortestDistance;
+  // the progress
   uint8_t progress = round((distanceTravelled / totalDistance) * 100);
   // get progress string
   _lcd->setCursor(0, 0);
@@ -136,7 +141,10 @@ void LCDDisplay::renderProgressScreen()
     // add the progress as centered as we can
     _lcd->setCursor(6 + (3 - String(progress).length()), 0);
   }
-  _lcd->print(progress); _lcd->print("%");
+  _lcd->print(progress);
+  _lcd->print("%");
+  // _lcd->print("/");
+  // _lcd->print(String(ratio, 2));
   _lcd->setCursor(0, 1);
   uint8_t decimalPrecision = 2;
   if (totalDistance >= 1000) {
@@ -268,13 +276,13 @@ void LCDDisplay::loop(bool shouldUpdate)
     // clear from here to reduce sketch size, renderTripSelectorScreen does it's own clearing
     _lcd->clear();
     _lastRenderTime = now;
-    if (activeScreen == 3) {
+    if (activeScreen == 1) {
       activeScreen = 0;
     } else {
       activeScreen++;
     }
     // if (!_state->fix) return renderWaitingScreen();
-    if (activeScreen < 3) return renderCompassScreen();
+    if (activeScreen < 1 || !_state->fix) return renderCompassScreen();
     return renderProgressScreen();
     // if (activeScreen == 2) return renderSpeedScreen();
     // if (activeScreen == 3) return renderPositionScreen();

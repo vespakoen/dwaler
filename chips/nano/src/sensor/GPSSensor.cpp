@@ -49,7 +49,7 @@ void GPSSensor::loop(bool shouldUpdate)
       int year;
       byte month, day, hour, minute, second, hundredths;
       nmeaParser.crack_datetime(&year, &month, &day, &hour, &minute, &second, &hundredths, &age);
-      sprintf(_state->timestamp, "%02d%02d%02d%02d%02d%02d", year, month, day, hour, minute, second);
+      sprintf(_state->timestamp, "%02d%02d%02d%02d%02d%02d%02d", year, month, day, hour, minute, second, hundredths);
     }
   }
   #else
@@ -64,7 +64,7 @@ void GPSSensor::loop(bool shouldUpdate)
       _state->course = 0;
     }
     _state->travelledDistance = _state->travelledDistance ? _state->travelledDistance + 1 : 12;
-    strncpy(_state->timestamp, "20170421223912", 15);
+    strncpy(_state->timestamp, "2017042122391211", 15);
   }
   #endif
 }

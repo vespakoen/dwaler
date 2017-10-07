@@ -1,3 +1,7 @@
 chips/scratch
 .tern-port
 env.sh
+apps/mobile/ios/www/
+.DS_Store
+node_modules/
+tools/node_modules

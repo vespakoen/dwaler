@@ -1,0 +1,9 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+target 'Dwaler' do
+
+  pod 'GooglePlaces', '2.1'
+  pod 'GoogleMaps', '2.1'
+  pod 'GooglePlacePicker', '2.1'
+
+end
