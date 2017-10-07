@@ -90,24 +90,12 @@
   },
   "sources": {
     "composite": {
-<<<<<<< HEAD
-      "url": "http://localhost:9997/map/metadata.json",
-=======
       "url": "http://localhost:9997/www/map/metadata.json",
->>>>>>> dev
       "type": "vector",
       "minzoom": 0,
       "maxzoom": 14
     },
     "route": {
-<<<<<<< HEAD
-      "data": "http://localhost:9997/noarberlien.json",
-      "type": "geojson"
-    }
-  },
-  "sprite": "http://localhost:9997/sprite",
-  "glyphs": "http://localhost:9997/fonts/{fontstack}/{range}.pbf",
-=======
       "data": "http://localhost:9997/www/track.geojson",
       "type": "geojson"
     },
@@ -130,7 +118,6 @@
   },
   "sprite": "asset://www/sprite",
   "glyphs": "asset://www/fonts/{fontstack}/{range}.pbf",
->>>>>>> dev
   "layers": [
     {
       "id": "background",
@@ -14712,8 +14699,6 @@
           ]
         }
       }
-<<<<<<< HEAD
-=======
     },
     {
       "id": "motorcycle-shops",
@@ -14997,7 +14982,6 @@
         },
         "text-halo-blur": 0.5
       }
->>>>>>> dev
     }
   ],
   "created": 0,
